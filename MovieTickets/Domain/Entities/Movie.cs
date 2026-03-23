@@ -11,11 +11,11 @@ namespace MovieTickets.Domain.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        SoapDuration Duration { get; set; }
+        int Duration { get; set; }
 
-       public decimal Price { get; set; }    
+      
         
-        public Movie(int id, string name, SoapDuration duration, decimal price)
+        public Movie(int id, string name, int duration, decimal price)
         {
             Id = id;
             Name = name;

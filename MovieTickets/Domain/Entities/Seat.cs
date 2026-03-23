@@ -8,5 +8,7 @@ namespace MovieTickets.Domain.Entities
 {
     internal class Seat
     {
+        int Id { get; set; }
+        int Row { get; set; }
     }
 }

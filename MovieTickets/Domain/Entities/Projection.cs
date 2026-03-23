@@ -8,9 +8,9 @@ namespace MovieTickets.Domain.Entities
 {
     internal class Projection
     {
-        Movie Movie { get; set; }
+       public Movie Movie { get; set; }
         Hall Hall { get; set; }
-        decimal Price { get; set; }
+        public decimal Price { get; set; }
         DateTime Date { get; set; }
 
 
@@ -18,7 +18,7 @@ namespace MovieTickets.Domain.Entities
         {
             Movie = movie;
             Hall = hall;
-            Price = Movie.Price;
+            Price = price;
             Date = date;
         }
 

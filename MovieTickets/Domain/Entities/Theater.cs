@@ -8,5 +8,6 @@ namespace MovieTickets.Domain.Entities
 {
     internal class Theater
     {
+
     }
 }
