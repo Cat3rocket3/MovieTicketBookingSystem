@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MovieTickets.Domain.Entities
 {
-    internal class Projection
+    public class Projection
     {
        public Movie Movie { get; set; }
         Hall Hall { get; set; }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MovieTickets.Domain.Entities
 {
-    internal class Movie
+    public class Movie
     {
         public int Id { get; set; }
         public string Name { get; set; }
