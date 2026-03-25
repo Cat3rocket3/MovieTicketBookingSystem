@@ -8,10 +8,10 @@ namespace MovieTickets.Domain.Entities
 {
     public class Ticket
     {
-        int Id { get; set; }
-        Projection Projection { get; set; }
-        Seat Seat { get; set; }
-        decimal Price { get; set; }
+        public int Id { get; set; }
+        public Projection Projection { get; set; }
+        public Seat Seat { get; set; }
+        public decimal Price { get; set; }
         public Ticket(int id, Projection projection, Seat seat)
         {
             Id = id;

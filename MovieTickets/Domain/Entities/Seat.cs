@@ -8,7 +8,7 @@ namespace MovieTickets.Domain.Entities
 {
     public class Seat
     {
-        int Id { get; set; }
-        int Row { get; set; }
+       public int Id { get; set; }
+        public int Row { get; set; }
     }
 }
