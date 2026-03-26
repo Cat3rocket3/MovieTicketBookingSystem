@@ -23,8 +23,6 @@ namespace MovieTickets.Application.Services
         public void AddMovie(string title, int duration)
         {
             Movie movie = new Movie(0,title,duration);
-           
-
             repository.AddMovie(movie);
         }
 
@@ -35,5 +33,11 @@ namespace MovieTickets.Application.Services
 
         }
 
-     }
+        public void AddProjection(Movie movie, Hall hall, decimal price, DateTime date)
+        {
+            Projection projection = new Projection(0, movie, hall, price, date);
+            repository.AddProjection(movie);
+        }
+
+    }
 }

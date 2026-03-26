@@ -20,7 +20,6 @@ namespace MovieTickets.Domain.Entities
             Id = id;
             Name = name;
             Duration = duration;
-            
         }
 
     }
