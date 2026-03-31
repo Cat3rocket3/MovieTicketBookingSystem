@@ -14,7 +14,7 @@ namespace MovieTickets
         static void Main(string[] args)
         {
             var storage = new TheaterStorage();
-            var repository = new TheaterRepository(storage);
+            var repository = new ITheaterRepository(storage);
             var movieService = new MovieService(repository);
             var ui = new UI(movieService);
             ui.ShowMainMenu();

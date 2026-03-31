@@ -26,6 +26,12 @@ namespace MovieTickets.Application.Services
             repository.AddMovie(movie);
         }
 
+        public void RemoveMovie(int id)
+        {
+            Movie movie = new Movie(0, title, duration);
+            repository.AddMovie(movie);
+        }
+
         public IReadOnlyList<Movie> GetAllMovies()
         {
             return repository.GetAllMovies();

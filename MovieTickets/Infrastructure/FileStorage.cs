@@ -19,6 +19,7 @@ namespace MovieTickets.Infrastructure
         {
             this.path = path;
         }
+
         public TheaterStorage Load()
         {
             if (!File.Exists(path))

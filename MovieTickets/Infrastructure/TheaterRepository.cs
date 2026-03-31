@@ -37,9 +37,39 @@ namespace MovieTickets.Infrastructure
 
         public void AddMovie(Movie movie)
         {
-            movie.Id = storage.NextMovieId;
-            storage.NextMovieId++;
-            storage.Movies.Add(movie);
+            if (movie.Id == 0)
+            {
+                movie.Id = storage.NextMovieId++;
+                storage.Movies.Add(movie);
+            }
+            else
+            {
+                bool found = false;
+                for (int i = 0; i < storage.Movies.Count; i++)
+                {
+                    if (storage.Movies.Id == movie.Id)
+                    {
+                        storage.Movies[i] = movie;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    throw new Exception("Movie not found");
+                }
+            }
+
+        }
+
+        public void RemoveMovie(int id)
+        {
+            Movie movie = GetMovieById(id);
+            
+            if (movie != null)
+            {
+                storage.Movies.Remove(movie);
+            }
         }
 
         public IReadOnlyList<Hall> GetAllHalls()

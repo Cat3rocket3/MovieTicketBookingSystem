@@ -12,11 +12,11 @@ namespace MovieTickets.Application
 {
     internal class UI
     {
-         private readonly MovieService movieService;
+         private readonly MovieService service;
 
-        public UI(MovieService service)
+        public UI(MovieService movieService)
         {
-            this.movieService = service;
+            this.service = movieService;
         }
 
 
@@ -26,12 +26,21 @@ namespace MovieTickets.Application
             while (running)
             {
                 Console.WriteLine("Welcome to the Movie Theater!");
-                Console.WriteLine("1. View Movies");
-                Console.WriteLine("2.Add Movie");
-                Console.WriteLine("3.Remove Movie");
+                Console.WriteLine("1. Show Movies");
+                Console.WriteLine("2. Add Movie");
+                Console.WriteLine("3. Remove Movie");
+                Console.WriteLine("4. Edit Movie");
+                Console.WriteLine("5. Show Projections");
+                Console.WriteLine("6. Add Projection");
+                Console.WriteLine("7. Remove Projection");
+                Console.WriteLine("8. Edit Projection");
                 Console.WriteLine("0. Exit");
+                Console.WriteLine();
+                Console.Write("Choice: ");
                 switch (Console.ReadLine())
                 {
+                    Console.WriteLine();
+
                     case "1":
                         ShowMovies();
                         break;
@@ -45,13 +54,16 @@ namespace MovieTickets.Application
                         EditMovie();
                         break;
                     case "5":
-                        AddMovie();
+                        ShowProjections();
                         break;
-                    case "3":
-                        RemoveMovie();
+                    case "6":
+                        AddProjection();
                         break;
-                    case "4":
-                        EditMovie();
+                    case "7":
+                        RemoveProjection();
+                        break;
+                    case "8":
+                        EditProjection();
                         break;
                     case "0":
                         Console.WriteLine("Goodbye!");
@@ -67,7 +79,7 @@ namespace MovieTickets.Application
 
         public void ShowMovies() 
         {
-         var movies = movieService.GetAllMovies();
+         var movies = service.GetAllMovies();
             Console.WriteLine("Movies:");
             foreach (var movie in movies)
             {
@@ -83,14 +95,14 @@ namespace MovieTickets.Application
             Console.WriteLine("Enter movie duration (in minutes):");
             int duration=int.Parse(Console.ReadLine());
 
-            movieService.AddMovie(title, duration);
+            service.AddMovie(title, duration);
         }
 
         public void RemoveMovie()
         {
             Console.WriteLine("Enter movie ID to remove:");
             int id = int.Parse(Console.ReadLine());
-            movieService.RemoveMovie(id);
+            service.RemoveMovie(id);
         }
 
         public void EditMovie()
@@ -104,7 +116,7 @@ namespace MovieTickets.Application
             Console.WriteLine("Enter new movie duration (in minutes):");
             int duration = int.Parse(Console.ReadLine());
 
-            movieService.EditMovie(id, title, duration);
+            service.EditMovie(id, title, duration);
         }
 
         public void AddProjection()
@@ -121,7 +133,7 @@ namespace MovieTickets.Application
             Console.Write("Enter projection time (e.g., 2024-12-31 19:00): ");
             DateTime time = DateTime.Parse(Console.ReadLine());
 
-            movieService.AddProjection(movieId, time);
+            service.AddProjection(movieId, time);
         }
 
         public void RemoveProjection()
@@ -129,7 +141,7 @@ namespace MovieTickets.Application
             
             Console.Write("Enter projection ID to remove: ");
             int id = int.Parse(Console.ReadLine());
-            movieService.RemoveProjection(id);
+            service.RemoveProjection(id);
         }
 
         public void EditProjection()
@@ -143,12 +155,12 @@ namespace MovieTickets.Application
             Console.Write("Enter new projection time (e.g., 2024-12-31 19:00): ");
             DateTime time = DateTime.Parse(Console.ReadLine());
 
-            movieService.EditProjection(id, movieId, time);
+            service.EditProjection(id, movieId, time);
         }
 
         public void ShowProjections()
         {
-            var projections = movieService.GetAllProjections();
+            var projections = service.GetAllProjections();
             Console.WriteLine("Projections:");
             foreach (var projection in projections)
             {
