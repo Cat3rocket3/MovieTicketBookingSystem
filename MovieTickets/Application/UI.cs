@@ -12,7 +12,7 @@ namespace MovieTickets.Application
 {
     internal class UI
     {
-         private readonly MovieService service;
+        private readonly MovieService service;
 
         public UI(MovieService movieService)
         {
@@ -39,7 +39,7 @@ namespace MovieTickets.Application
                 Console.Write("Choice: ");
                 switch (Console.ReadLine())
                 {
-                    Console.WriteLine();
+
 
                     case "1":
                         ShowMovies();
@@ -77,9 +77,9 @@ namespace MovieTickets.Application
 
         }
 
-        public void ShowMovies() 
+        public void ShowMovies()
         {
-         var movies = service.GetAllMovies();
+            var movies = service.GetAllMovies();
             Console.WriteLine("Movies:");
             foreach (var movie in movies)
             {
@@ -93,7 +93,7 @@ namespace MovieTickets.Application
             string title = Console.ReadLine();
 
             Console.WriteLine("Enter movie duration (in minutes):");
-            int duration=int.Parse(Console.ReadLine());
+            int duration = int.Parse(Console.ReadLine());
 
             service.AddMovie(title, duration);
         }
@@ -138,7 +138,7 @@ namespace MovieTickets.Application
 
         public void RemoveProjection()
         {
-            
+
             Console.Write("Enter projection ID to remove: ");
             int id = int.Parse(Console.ReadLine());
             service.RemoveProjection(id);
@@ -168,3 +168,4 @@ namespace MovieTickets.Application
             }
         }
     }
+}
