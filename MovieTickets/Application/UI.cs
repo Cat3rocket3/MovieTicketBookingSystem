@@ -7,6 +7,7 @@ using MovieTickets.Application.Services;
 using MovieTickets.Application.interfaces;
 using MovieTickets.Infrastructure;
 using System.Diagnostics;
+using System.CodeDom;
 
 namespace MovieTickets.Application
 {
@@ -26,17 +27,10 @@ namespace MovieTickets.Application
             while (running)
             {
                 Console.WriteLine("Welcome to the Movie Theater!");
-                Console.WriteLine("1. Show Movies");
-                Console.WriteLine("2. Add Movie");
-                Console.WriteLine("3. Remove Movie");
-                Console.WriteLine("4. Edit Movie");
-                Console.WriteLine("5. Show Projections");
-                Console.WriteLine("6. Add Projection");
-                Console.WriteLine("7. Remove Projection");
-                Console.WriteLine("8. Edit Projection");
+                Console.WriteLine("1. View Movies");
+                Console.WriteLine("2.Add Movie");
+                Console.WriteLine("3.Remove Movie");
                 Console.WriteLine("0. Exit");
-                Console.WriteLine();
-                Console.Write("Choice: ");
                 switch (Console.ReadLine())
                 {
                     Console.WriteLine();
@@ -48,22 +42,8 @@ namespace MovieTickets.Application
                         AddMovie();
                         break;
                     case "3":
-                        RemoveMovie();
-                        break;
-                    case "4":
-                        EditMovie();
-                        break;
-                    case "5":
-                        ShowProjections();
-                        break;
-                    case "6":
-                        AddProjection();
-                        break;
-                    case "7":
-                        RemoveProjection();
-                        break;
-                    case "8":
-                        EditProjection();
+                        ShowMovies();
+                        //remove
                         break;
                     case "0":
                         Console.WriteLine("Goodbye!");

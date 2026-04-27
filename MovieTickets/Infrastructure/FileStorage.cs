@@ -11,7 +11,7 @@ using System.IO;
 namespace MovieTickets.Infrastructure
 {   
 
-    internal class FileStorage
+    public class FileStorage
     {
         private readonly string path;
 
