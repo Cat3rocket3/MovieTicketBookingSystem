@@ -10,21 +10,23 @@ namespace MovieTickets.Infrastructure
 {
     public class TheaterRepository : ITheaterRepository
     {
-        private readonly TheaterStorage storage;
+        private readonly FileStorage storage;
 
-        public TheaterRepository(TheaterStorage storage)
+        public TheaterRepository(FileStorage storage)
         {
             this.storage = storage;
         }
 
         public IReadOnlyList<Movie> GetAllMovies()
         {
-            return storage.Movies;
+            var db = storage.Load();
+            return db.Movies;
         }
 
         public Movie GetMovieById(int id)
         {
-            foreach (Movie movie in storage.Movies)
+            var db = storage.Load();
+            foreach (Movie movie in db.Movies) 
             {
                 if (movie.Id == id)
                 {
@@ -34,22 +36,26 @@ namespace MovieTickets.Infrastructure
 
             return null;
         }
+    
 
         public void AddMovie(Movie movie)
-        {
-            movie.Id = storage.NextMovieId;
-            storage.NextMovieId++;
-            storage.Movies.Add(movie);
+        {var db = storage.Load();
+            movie.Id = db.NextMovieId;
+            db.NextMovieId++;
+            db.Movies.Add(movie);
+            storage.Save(db);
         }
 
         public IReadOnlyList<Hall> GetAllHalls()
         {
-            return storage.Halls;
+            var db = storage.Load();
+            return db.Halls;
         }
 
         public Hall GetHallById(int id)
         {
-            foreach (Hall hall in storage.Halls)
+            var db = storage.Load();
+            foreach (Hall hall in db.Halls)
             {
                 if (hall.Id == id)
                 {
@@ -62,19 +68,23 @@ namespace MovieTickets.Infrastructure
 
         public void AddHall(Hall hall)
         {
-            hall.Id = storage.NextHallId;
-            storage.NextHallId++;
-            storage.Halls.Add(hall);
+            var db = storage.Load();
+            hall.Id = db.NextHallId;
+            db.NextHallId++;
+            db.Halls.Add(hall);
+            storage.Save(db);
         }
 
         public IReadOnlyList<Projection> GetAllProjections()
         {
-            return storage.Projections;
+            var db = storage.Load();
+            return db.Projections;
         }
 
         public Projection GetProjectionById(int id)
         {
-            foreach (Projection projection in storage.Projections)
+            var db = storage.Load();
+            foreach (Projection projection in db.Projections)
             {
                 if (projection.Id == id)
                 {
@@ -87,19 +97,23 @@ namespace MovieTickets.Infrastructure
 
         public void AddProjection(Projection projection)
         {
-            projection.Id = storage.NextProjectionId;
-            storage.NextProjectionId++;
-            storage.Projections.Add(projection);
+            var db = storage.Load();
+            projection.Id = db.NextProjectionId;
+            db.NextProjectionId++;
+            db.Projections.Add(projection);
+            storage.Save(db);
         }
 
         public IReadOnlyList<Ticket> GetAllTickets()
         {
-            return storage.Tickets;
+            var db = storage.Load();
+            return db.Tickets;
         }
 
         public Ticket GetTicketById(int id)
         {
-            foreach (Ticket ticket in storage.Tickets)
+            var db = storage.Load();
+            foreach (Ticket ticket in db.Tickets)
             {
                 if (ticket.Id == id)
                 {
@@ -112,9 +126,11 @@ namespace MovieTickets.Infrastructure
 
         public void AddTicket(Ticket ticket)
         {
-            ticket.Id = storage.NextTicketId;
-            storage.NextTicketId++;
-            storage.Tickets.Add(ticket);
+            var db = storage.Load();
+            ticket.Id = db.NextTicketId;
+            db.NextTicketId++;
+            db.Tickets.Add(ticket);
+            storage.Save(db);
         }
     }
 }

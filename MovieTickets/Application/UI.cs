@@ -7,6 +7,7 @@ using MovieTickets.Application.Services;
 using MovieTickets.Application.interfaces;
 using MovieTickets.Infrastructure;
 using System.Diagnostics;
+using System.CodeDom;
 
 namespace MovieTickets.Application
 {
@@ -38,7 +39,7 @@ namespace MovieTickets.Application
                 Console.WriteLine("1. View Movies");
                 Console.WriteLine("2.Add Movie");
                 Console.WriteLine("3.Remove Movie");
-                Console.WriteLine("3. Exit");
+                Console.WriteLine("0. Exit");
                 switch (Console.ReadLine())
                 {
                     case "1":
@@ -48,9 +49,10 @@ namespace MovieTickets.Application
                         AddMovie();
                         break;
                     case "3":
-                        
+                        ShowMovies();
+                        //remove
                         break;
-                    case "4":
+                    case "0":
                         Console.WriteLine("Goodbye!");
                         running = false;
                         return;

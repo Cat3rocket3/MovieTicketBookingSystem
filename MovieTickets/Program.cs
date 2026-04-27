@@ -1,4 +1,5 @@
 ﻿using MovieTickets.Application;
+using MovieTickets.Application.interfaces;
 using MovieTickets.Application.Services;
 using MovieTickets.Infrastructure;
 using System;
@@ -13,8 +14,8 @@ namespace MovieTickets
     {
         static void Main(string[] args)
         {
-            var storage = new TheaterStorage();
-            var repository = new TheaterRepository(storage);
+            var storage = new FileStorage("theater.json");
+            ITheaterRepository repository = new TheaterRepository(storage);
             var movieService = new MovieService(repository);
             var ui = new UI(movieService);
             ui.ShowMainMenu();
