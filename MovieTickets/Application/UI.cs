@@ -13,7 +13,7 @@ namespace MovieTickets.Application
 {
     internal class UI
     {
-         private readonly MovieService movieService;
+        private readonly MovieService movieService;
 
         public UI(MovieService service)
         {
@@ -23,11 +23,11 @@ namespace MovieTickets.Application
 
         public void ShowMainMenu()
         {
-            
 
 
 
-        
+
+
 
 
 
@@ -50,7 +50,7 @@ namespace MovieTickets.Application
                         break;
                     case "3":
                         ShowMovies();
-                        //remove
+                        RemoveMovie();
                         break;
                     case "0":
                         Console.WriteLine("Goodbye!");
@@ -65,12 +65,14 @@ namespace MovieTickets.Application
         }
 
         public void ShowMovies()
-
-
-             
         {
-         var movies = movieService.GetAllMovies();
+            var movies = movieService.GetAllMovies();
             Console.WriteLine("Movies:");
+            if (movies.Count == 0)
+            {
+                Console.WriteLine("(No movies at this moment)");
+                return;
+            }
             foreach (var movie in movies)
             {
                 Console.WriteLine($"{movie.Id}. {movie.Name} ({movie.Duration} mins)");
@@ -79,14 +81,25 @@ namespace MovieTickets.Application
 
         public void AddMovie()
         {
-            Console.WriteLine("Enter movie title:");
+            Console.Write("Enter movie title: ");
             string title = Console.ReadLine();
-            Console.WriteLine("Enter movie duration (in minutes):");
-            int duration=int.Parse(Console.ReadLine());
+            Console.Write("Enter movie duration (in minutes): ");
+            int duration = int.Parse(Console.ReadLine());
 
-            
+
 
             movieService.AddMovie(title, duration);
+        }
+
+        public void RemoveMovie()
+        {
+            if(movieService.GetAllMovies().Count == 0)
+            {
+                return;
+            }
+            Console.Write("Enter movie ID to remove: ");
+            int id = int.Parse(Console.ReadLine());
+            movieService.RemoveMovie(id);
         }
     }
 }
