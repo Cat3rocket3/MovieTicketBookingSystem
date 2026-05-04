@@ -13,7 +13,7 @@ namespace MovieTickets.Application
 {
     internal class UI
     {
-         private readonly MovieService service;
+        private readonly MovieService movieService;
 
         public UI(MovieService movieService)
         {
@@ -23,6 +23,15 @@ namespace MovieTickets.Application
 
         public void ShowMainMenu()
         {
+
+
+
+
+
+
+
+
+
             bool running = true;
             while (running)
             {
@@ -43,7 +52,7 @@ namespace MovieTickets.Application
                         break;
                     case "3":
                         ShowMovies();
-                        //remove
+                        RemoveMovie();
                         break;
                     case "0":
                         Console.WriteLine("Goodbye!");
@@ -57,10 +66,15 @@ namespace MovieTickets.Application
 
         }
 
-        public void ShowMovies() 
+        public void ShowMovies()
         {
-         var movies = service.GetAllMovies();
+            var movies = movieService.GetAllMovies();
             Console.WriteLine("Movies:");
+            if (movies.Count == 0)
+            {
+                Console.WriteLine("(No movies at this moment)");
+                return;
+            }
             foreach (var movie in movies)
             {
                 Console.WriteLine($"{movie.Id}. {movie.Name} ({movie.Duration} mins)");
@@ -69,82 +83,25 @@ namespace MovieTickets.Application
 
         public void AddMovie()
         {
-            Console.WriteLine("Enter movie title:");
+            Console.Write("Enter movie title: ");
             string title = Console.ReadLine();
+            Console.Write("Enter movie duration (in minutes): ");
+            int duration = int.Parse(Console.ReadLine());
 
-            Console.WriteLine("Enter movie duration (in minutes):");
-            int duration=int.Parse(Console.ReadLine());
 
-            service.AddMovie(title, duration);
+
+            movieService.AddMovie(title, duration);
         }
 
         public void RemoveMovie()
         {
-            Console.WriteLine("Enter movie ID to remove:");
-            int id = int.Parse(Console.ReadLine());
-            service.RemoveMovie(id);
-        }
-
-        public void EditMovie()
-        {
-            Console.WriteLine("Enter movie ID to edit:");
-            int id = int.Parse(Console.ReadLine());
-
-            Console.WriteLine("Enter new movie title:");
-            string title = Console.ReadLine();
-
-            Console.WriteLine("Enter new movie duration (in minutes):");
-            int duration = int.Parse(Console.ReadLine());
-
-            service.EditMovie(id, title, duration);
-        }
-
-        public void AddProjection()
-        {
-            Console.Write("Enter movie ID for projection: ");
-            int movieId = int.Parse(Console.ReadLine());
-
-            Console.Write("Enter hall ID for projection: ");
-            int hallId = int.Parse(Console.ReadLine());
-
-            Console.Write("Enter ticket price for projection: ");
-            decimal price = decimal.Parse(Console.ReadLine());
-
-            Console.Write("Enter projection time (e.g., 2024-12-31 19:00): ");
-            DateTime time = DateTime.Parse(Console.ReadLine());
-
-            service.AddProjection(movieId, time);
-        }
-
-        public void RemoveProjection()
-        {
-            
-            Console.Write("Enter projection ID to remove: ");
-            int id = int.Parse(Console.ReadLine());
-            service.RemoveProjection(id);
-        }
-
-        public void EditProjection()
-        {
-            Console.Write("Enter projection ID to edit: ");
-            int id = int.Parse(Console.ReadLine());
-
-            Console.Write("Enter new movie ID for projection: ");
-            int movieId = int.Parse(Console.ReadLine());
-
-            Console.Write("Enter new projection time (e.g., 2024-12-31 19:00): ");
-            DateTime time = DateTime.Parse(Console.ReadLine());
-
-            service.EditProjection(id, movieId, time);
-        }
-
-        public void ShowProjections()
-        {
-            var projections = service.GetAllProjections();
-            Console.WriteLine("Projections:");
-            foreach (var projection in projections)
+            if(movieService.GetAllMovies().Count == 0)
             {
-                Console.WriteLine($"{projection.Id}. Movie ID: {projection.MovieId}, Time: {projection.Time}");
+                return;
             }
+            Console.Write("Enter movie ID to remove: ");
+            int id = int.Parse(Console.ReadLine());
+            movieService.RemoveMovie(id);
         }
     }
+}

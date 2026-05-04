@@ -46,6 +46,22 @@ namespace MovieTickets.Infrastructure
             storage.Save(db);
         }
 
+        public void RemoveMovie(int id)
+        {
+            var db = storage.Load();
+            foreach (Movie movie in db.Movies)
+            {
+                if (movie.Id == id)
+                {
+                    db.Movies.Remove(movie);
+                    storage.Save(db);
+                    return;
+                }
+            }
+
+            Console.WriteLine("Movie with this ID does not exist.");
+        }
+
         public IReadOnlyList<Hall> GetAllHalls()
         {
             var db = storage.Load();
