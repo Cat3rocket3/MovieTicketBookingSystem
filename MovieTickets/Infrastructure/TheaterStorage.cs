@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MovieTickets.Infrastructure
 {
-   public class TheaterStorage
+    public class TheaterStorage
     {
         public int NextMovieId { get; set; } = 1;
         public int NextHallId { get; set; } = 1;
@@ -17,6 +17,7 @@ namespace MovieTickets.Infrastructure
 
         public List<Movie> Movies { get; set; } = new List<Movie>();
         public List<Hall> Halls { get; set; } = new List<Hall>();
+        public List<Seat> Seats { get; set; } = new List<Seat>();
         public List<Projection> Projections { get; set; } = new List<Projection>();
         public List<Ticket> Tickets { get; set; } = new List<Ticket>();
     }

@@ -49,17 +49,14 @@ namespace MovieTickets.Infrastructure
         public void RemoveMovie(int id)
         {
             var db = storage.Load();
-            foreach (Movie movie in db.Movies)
+            var movie = GetMovieById(id);
+            if (movie != null)
             {
-                if (movie.Id == id)
-                {
-                    db.Movies.Remove(movie);
-                    storage.Save(db);
-                    return;
-                }
+                db.Movies.Remove(movie);
+                storage.Save(db);
             }
 
-            Console.WriteLine("Movie with this ID does not exist.");
+            else Console.WriteLine("Movie with this ID does not exist.");
         }
 
         public IReadOnlyList<Hall> GetAllHalls()
@@ -88,6 +85,32 @@ namespace MovieTickets.Infrastructure
             hall.Id = db.NextHallId;
             db.NextHallId++;
             db.Halls.Add(hall);
+            storage.Save(db);
+        }
+
+        public void RemoveHall(int id)
+        {
+            var db = storage.Load();
+            var hall = GetHallById(id);
+            if (hall != null)
+            {
+                foreach(Seat seat in hall.Seats)
+                {
+                    db.Seats.Remove(seat);
+                }
+                db.Halls.Remove(hall);
+                storage.Save(db);
+            }
+
+            else Console.WriteLine("Hall with this ID does not exist.");
+        }
+
+        public void AddSeat(Seat seat)
+        {
+            var db = storage.Load();
+            seat.Id = db.NextSeatId;
+            db.NextSeatId++;
+            db.Seats.Add(seat);
             storage.Save(db);
         }
 
