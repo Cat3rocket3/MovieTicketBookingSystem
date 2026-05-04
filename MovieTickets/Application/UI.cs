@@ -37,8 +37,11 @@ namespace MovieTickets.Application
             {
                 Console.WriteLine("Welcome to the Movie Theater!");
                 Console.WriteLine("1. View Movies");
-                Console.WriteLine("2.Add Movie");
-                Console.WriteLine("3.Remove Movie");
+                Console.WriteLine("2. Add Movie");
+                Console.WriteLine("3. Remove Movie");
+                Console.WriteLine("4. View Halls");
+                Console.WriteLine("5. Add Hall");
+                Console.WriteLine("6. Remove Hall");
                 Console.WriteLine("0. Exit");
                 switch (Console.ReadLine())
                 {
@@ -52,6 +55,16 @@ namespace MovieTickets.Application
                         ShowMovies();
                         RemoveMovie();
                         break;
+                    case "4":
+                        ShowHalls();
+                        break;
+                    //case "5":
+                    //    AddHall();
+                    //    break;
+                    //case "6":
+                    //    ShowHalls();
+                    //    RemoveHall();
+                    //    break;
                     case "0":
                         Console.WriteLine("Goodbye!");
                         running = false;
@@ -62,6 +75,42 @@ namespace MovieTickets.Application
                 }
             }
 
+        }
+
+        private void RemoveHall()
+        {
+            if (movieService.GetAllHalls().Count == 0)
+            {
+                return;
+            }
+            Console.Write("Enter Hall ID to remove: ");
+            int id = int.Parse(Console.ReadLine());
+            movieService.RemoveHall(id);
+        }
+
+        private void AddHall()
+        {
+            throw new NotImplementedException(); // ne pipai dokato ne se opravqt problemite s seat id
+            Console.WriteLine("Enter number of rows: ");
+            int rows = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter number of columns: ");
+            int columns = int.Parse(Console.ReadLine());
+            movieService.AddHall(rows, columns);
+        }
+
+        private void ShowHalls()
+        {
+            var halls = movieService.GetAllHalls();
+            Console.WriteLine("Halls:");
+            if (halls.Count == 0)
+            {
+                Console.WriteLine("(No halls at this moment)");
+                return;
+            }
+            foreach (var hall in halls)
+            {
+                Console.WriteLine($"{hall.Id}. (Capacity: {hall.Seats.Count})");
+            }
         }
 
         public void ShowMovies()
@@ -85,9 +134,6 @@ namespace MovieTickets.Application
             string title = Console.ReadLine();
             Console.Write("Enter movie duration (in minutes): ");
             int duration = int.Parse(Console.ReadLine());
-
-
-
             movieService.AddMovie(title, duration);
         }
 

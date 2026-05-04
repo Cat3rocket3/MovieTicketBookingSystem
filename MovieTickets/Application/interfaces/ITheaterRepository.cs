@@ -17,6 +17,9 @@ namespace MovieTickets.Application.interfaces
         IReadOnlyList<Hall> GetAllHalls();
         Hall GetHallById(int id);
         void AddHall(Hall hall);
+        void RemoveHall(int id);
+
+        void AddSeat(Seat seat);
 
         IReadOnlyList<Projection> GetAllProjections();
         Projection GetProjectionById(int id);
