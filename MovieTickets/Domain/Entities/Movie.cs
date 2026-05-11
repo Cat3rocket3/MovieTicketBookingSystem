@@ -13,15 +13,15 @@ namespace MovieTickets.Domain.Entities
         public string Name { get; set; }
         public int Duration { get; set; }
 
+        // Navigation property
+        public virtual ICollection<Projection> Projections { get; set; }
 
-
+        public Movie() { } // Required for EF
         public Movie(int id, string name, int duration)
         {
             Id = id;
             Name = name;
             Duration = duration;
-            
         }
-
     }
 }
