@@ -12,7 +12,7 @@ namespace MovieTickets.Domain.Entities
         public int Column { get; set; }
         public int Row { get; set; }
         public bool IsAvailable { get; set; }
-        public Hall Hall { get; set; }
+     
 
         public Seat(int id, int row, int column)
         {

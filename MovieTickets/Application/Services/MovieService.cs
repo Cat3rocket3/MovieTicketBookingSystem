@@ -45,13 +45,17 @@ namespace MovieTickets.Application.Services
         public void AddHall(int rows, int columns)
         {
             List<Seat> seats = new List<Seat>();
+            int seatnumber = 0;
             for (int row = 1; row <= rows; row++)
             {
                 for (int col = 1; col <= columns; col++)
                 {
-                    Seat seat = new Seat(0, row, col);
-                    repository.AddSeat(seat);
-                  //  seats.Add(repository.AddSeat(seat));
+                    Seat seat = new Seat(seatnumber, row, col);
+                    seatnumber++;
+                   
+
+                    seats.Add(seat);
+
                 }
             }
             Hall hall = new Hall(0, seats);

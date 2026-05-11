@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MovieTickets.Application.interfaces;
+using MovieTickets.Domain.Entities;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MovieTickets.Domain.Entities;
-using MovieTickets.Application.interfaces;
 
 namespace MovieTickets.Infrastructure
 {
@@ -52,8 +53,10 @@ namespace MovieTickets.Infrastructure
             var movie = GetMovieById(id);
             if (movie != null)
             {
-                db.Movies.Remove(movie);
+                db.Movies.RemoveAll(item => item.Id == id);
+
                 storage.Save(db);
+                Console.WriteLine("Movie removed.");
             }
 
             else Console.WriteLine("Movie with this ID does not exist.");
@@ -94,25 +97,15 @@ namespace MovieTickets.Infrastructure
             var hall = GetHallById(id);
             if (hall != null)
             {
-                foreach(Seat seat in hall.Seats)
-                {
-                    db.Seats.Remove(seat);
-                }
-                db.Halls.Remove(hall);
+
+                db.Halls.RemoveAll(item => item.Id == id);
                 storage.Save(db);
             }
 
             else Console.WriteLine("Hall with this ID does not exist.");
         }
 
-        public void AddSeat(Seat seat)
-        {
-            var db = storage.Load();
-            seat.Id = db.NextSeatId;
-            db.NextSeatId++;
-            db.Seats.Add(seat);
-            storage.Save(db);
-        }
+     
 
         public IReadOnlyList<Projection> GetAllProjections()
         {

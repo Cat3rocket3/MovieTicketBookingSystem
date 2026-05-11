@@ -52,19 +52,19 @@ namespace MovieTickets.Application
                         AddMovie();
                         break;
                     case "3":
-                        ShowMovies();
+                       
                         RemoveMovie();
                         break;
                     case "4":
                         ShowHalls();
                         break;
-                    //case "5":
-                    //    AddHall();
-                    //    break;
-                    //case "6":
-                    //    ShowHalls();
-                    //    RemoveHall();
-                    //    break;
+                    case "5":
+                        AddHall();
+                        break;
+                    case "6":
+                        ShowHalls();
+                        RemoveHall();
+                        break;
                     case "0":
                         Console.WriteLine("Goodbye!");
                         running = false;
@@ -90,7 +90,7 @@ namespace MovieTickets.Application
 
         private void AddHall()
         {
-            throw new NotImplementedException(); // ne pipai dokato ne se opravqt problemite s seat id
+          /*  throw new NotImplementedException();*/ // ne pipai dokato ne se opravqt problemite s seat id
             Console.WriteLine("Enter number of rows: ");
             int rows = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter number of columns: ");
@@ -139,7 +139,9 @@ namespace MovieTickets.Application
 
         public void RemoveMovie()
         {
-            if(movieService.GetAllMovies().Count == 0)
+            ShowMovies();
+
+            if (movieService.GetAllMovies().Count == 0)
             {
                 return;
             }
