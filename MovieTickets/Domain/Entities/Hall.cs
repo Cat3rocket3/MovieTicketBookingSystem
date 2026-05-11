@@ -9,8 +9,14 @@ namespace MovieTickets.Domain.Entities
     public class Hall
     {
         public int Id { get; set; }
-        public List<Seat> Seats { get; set; }
+        // Use ICollection for EF compatibility, but it accepts List
+        public virtual ICollection<Seat> Seats { get; set; } = new List<Seat>();
+        public virtual ICollection<Projection> Projections { get; set; }
 
+        // 1. Parameterless constructor for EF Core
+        public Hall() { }
+
+        // 2. The constructor your MovieService is looking for
         public Hall(int id, List<Seat> seats)
         {
             Id = id;
