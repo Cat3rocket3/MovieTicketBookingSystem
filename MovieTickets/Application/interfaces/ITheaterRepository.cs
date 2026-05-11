@@ -19,7 +19,7 @@ namespace MovieTickets.Application.interfaces
         void AddHall(Hall hall);
         void RemoveHall(int id);
 
-        void AddSeat(Seat seat);
+       
 
         IReadOnlyList<Projection> GetAllProjections();
         Projection GetProjectionById(int id);
