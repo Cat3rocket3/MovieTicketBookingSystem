@@ -1,7 +1,6 @@
-﻿using MovieTickets.Application.interfaces;
+﻿using MovieTickets.Data;
 using MovieTickets.Domain.Entities;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,26 +8,26 @@ using System.Threading.Tasks;
 
 namespace MovieTickets.Infrastructure
 {
-    public class TheaterRepository : ITheaterRepository
+    internal class TheaterSqlRepository : MovieTickets.Application.interfaces.ITheaterRepository
     {
-        private readonly FileStorage storage;
-        
+        AppDbContext db;
 
-        public TheaterRepository(FileStorage storage)
+       
+        public TheaterSqlRepository(AppDbContext db)
         {
-            this.storage = storage;
+            this.db = db;
         }
 
         public IReadOnlyList<Movie> GetAllMovies()
         {
-            var db = storage.Load();
-            return db.Movies;
+            
+            return db.Movies.ToList();
         }
 
         public Movie GetMovieById(int id)
         {
-            var db = storage.Load();
-            foreach (Movie movie in db.Movies) 
+          
+            foreach (Movie movie in db.Movies)
             {
                 if (movie.Id == id)
                 {
@@ -38,14 +37,14 @@ namespace MovieTickets.Infrastructure
 
             return null;
         }
-    
+
 
         public void AddMovie(Movie movie)
-        {var db = storage.Load();
-            movie.Id = db.NextMovieId;
-            db.NextMovieId++;
+        {
+            
+            
             db.Movies.Add(movie);
-            storage.Save(db);
+            db.SaveChanges();
         }
 
         public void RemoveMovie(int id)
@@ -106,7 +105,7 @@ namespace MovieTickets.Infrastructure
             else Console.WriteLine("Hall with this ID does not exist.");
         }
 
-     
+
 
         public IReadOnlyList<Projection> GetAllProjections()
         {
