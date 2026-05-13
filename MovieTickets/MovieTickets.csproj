@@ -183,6 +183,7 @@
     <Compile Include="Domain\Entities\Ticket.cs" />
     <Compile Include="Infrastructure\FileStorage.cs" />
     <Compile Include="Infrastructure\TheaterRepository.cs" />
+    <Compile Include="Infrastructure\TheaterSqlRepository.cs" />
     <Compile Include="Infrastructure\TheaterStorage.cs" />
     <Compile Include="Migrations\20260511114640_App.cs" />
     <Compile Include="Migrations\20260511114640_App.Designer.cs">

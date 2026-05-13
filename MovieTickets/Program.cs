@@ -24,14 +24,14 @@ namespace MovieTickets
             var db = new AppDbContext(options);
 
             // Initialize the database connection
-            db.Movies
+          
 
             // Sync the database schema with your C# classes
             db.Database.Migrate();
             db.Update(db.Database);
 
             // Build the layers: Context -> Repository -> Service -> UI
-            ITheaterRepository repository = new TheaterRepository(storage);
+            ITheaterRepository repository = new TheaterSqlRepository(db);
             var movieService = new MovieService(repository);
             var ui = new UI(movieService);
 
