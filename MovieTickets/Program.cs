@@ -18,27 +18,25 @@ namespace MovieTickets
 
         static void Main(string[] args)
         {
+            var options = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer("Server=K207\\SQLEXPRESS;Database=MovieTickets;Integrated Security=True;").EnableSensitiveDataLogging().Options;
 
             // Declare the storage variable
-            AppDbContext storage;
+            var db = new AppDbContext(options);
 
             // Initialize the database connection
-            using (var db = new AppDbContext())
-            {
-                // Sync the database schema with your C# classes
-                db.Database.Migrate();
+            db.Movies
 
-                // Assign the context to your storage design
-                storage = db;
+            // Sync the database schema with your C# classes
+            db.Database.Migrate();
+            db.Update(db.Database);
 
-                // Build the layers: Context -> Repository -> Service -> UI
-                ITheaterRepository repository = new TheaterRepository(storage);
-                var movieService = new MovieService(repository);
-                var ui = new UI(movieService);
+            // Build the layers: Context -> Repository -> Service -> UI
+            ITheaterRepository repository = new TheaterRepository(storage);
+            var movieService = new MovieService(repository);
+            var ui = new UI(movieService);
 
-                // Start the application
-                ui.ShowMainMenu();
-            }
+            // Start the application
+            ui.ShowMainMenu();
         }
     }
 }
