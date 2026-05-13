@@ -11,7 +11,7 @@ namespace MovieTickets.Infrastructure
 {
     public class TheaterRepository : ITheaterRepository
     {
-        private readonly FileStorage storage;
+        private readonly var storage;
 
         public TheaterRepository(FileStorage storage)
         {
