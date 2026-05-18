@@ -34,7 +34,7 @@ namespace MovieTickets
             var movieService = new MovieService(repository);
             var ui = new UI(movieService);
 
-           
+           //mazna sync
 
             ui.ShowMainMenu();
         }
