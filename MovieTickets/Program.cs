@@ -20,13 +20,8 @@ namespace MovieTickets
         {
             var options = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer("Server=K207\\SQLEXPRESS;Database=MovieTickets;Integrated Security=True;").EnableSensitiveDataLogging().Options;
 
-           
             var db = new AppDbContext(options);
 
-            
-          
-
-            
             db.Database.Migrate();
             db.Update(db.Database);
 
