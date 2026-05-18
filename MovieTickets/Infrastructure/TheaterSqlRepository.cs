@@ -1,4 +1,5 @@
-﻿using MovieTickets.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieTickets.Data;
 using MovieTickets.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,7 @@ namespace MovieTickets.Infrastructure
 
         public IReadOnlyList<Hall> GetAllHalls()
         {
-            return db.Halls.ToList();
+            return db.Halls.Include(h => h.Seats).ToList();
         }
 
         public Hall GetHallById(int id)

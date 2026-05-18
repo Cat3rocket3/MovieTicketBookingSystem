@@ -50,7 +50,7 @@ namespace MovieTickets.Application.Services
             {
                 for (int col = 1; col <= columns; col++)
                 {
-                    Seat seat = new Seat(seatnumber, row, col);
+                    Seat seat = new Seat( row, col);
                     seatnumber++;
                    
 
@@ -58,7 +58,7 @@ namespace MovieTickets.Application.Services
 
                 }
             }
-            Hall hall = new Hall(0, seats);
+            Hall hall = new Hall( seats);
             repository.AddHall(hall);
         }
 
