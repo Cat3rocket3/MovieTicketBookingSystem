@@ -22,9 +22,6 @@ namespace MovieTickets
 
             var db = new AppDbContext(options);
 
-            db.Database.Migrate();
-            db.Update(db.Database);
-
             ITheaterRepository repository = new TheaterSqlRepository(db);
             var movieService = new MovieService(repository);
             var ui = new UI(movieService);

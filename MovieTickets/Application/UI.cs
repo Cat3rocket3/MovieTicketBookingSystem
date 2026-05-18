@@ -109,7 +109,7 @@ namespace MovieTickets.Application
             }
             foreach (var hall in halls)
             {
-                Console.WriteLine($"{hall.Id}. (Capacity: {hall.Seats.Count})");
+                Console.WriteLine($"└─ID:{hall.Id} | (Capacity: {hall.Seats.Count()})");
             }
         }
 

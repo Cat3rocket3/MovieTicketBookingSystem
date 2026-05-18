@@ -18,9 +18,9 @@ namespace MovieTickets.Domain.Entities
         public virtual Hall Hall { get; set; }
 
         public Seat() { }
-        public Seat(int id, int row, int column)
+        public Seat( int row, int column)
         {
-            Id = id;
+           
             Row = row;
             Column = column;
             IsAvailable = true;

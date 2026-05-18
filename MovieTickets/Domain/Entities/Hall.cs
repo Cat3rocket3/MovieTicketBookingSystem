@@ -17,9 +17,8 @@ namespace MovieTickets.Domain.Entities
         public Hall() { }
 
         // 2. The constructor your MovieService is looking for
-        public Hall(int id, List<Seat> seats)
+        public Hall( List<Seat> seats)
         {
-            Id = id;
             Seats = seats;
         }
     }
