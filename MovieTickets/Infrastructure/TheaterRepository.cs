@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MovieTickets.Infrastructure
 {
-    public class TheaterRepository : ITheaterRepository
+    public class TheaterRepository 
     {
         private readonly FileStorage storage;
         

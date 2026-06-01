@@ -123,6 +123,19 @@ namespace MovieTickets.Infrastructure
             db.SaveChanges();
         }
 
+        public void RemoveProjection(int id)
+        {
+            var projection = GetProjectionById(id);
+            if (projection != null)
+            {
+
+                db.Projections.Remove(projection);
+                db.SaveChanges();
+            }
+
+            else Console.WriteLine("Hall with this ID does not exist.");
+        }
+
         public IReadOnlyList<Ticket> GetAllTickets()
         {
 

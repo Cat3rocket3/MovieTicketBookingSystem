@@ -27,7 +27,7 @@ namespace MovieTickets.Data
             if (!optionsBuilder.IsConfigured)
             {
                 // Update this string if your local SQL Server instance is different
-                optionsBuilder.UseSqlServer("Data Source=localhost,1433;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer("Data Source=localhost,1433;Database=MovieTickets;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True");
             }
         }
 

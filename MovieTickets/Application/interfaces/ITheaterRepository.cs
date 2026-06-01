@@ -24,9 +24,12 @@ namespace MovieTickets.Application.interfaces
         IReadOnlyList<Projection> GetAllProjections();
         Projection GetProjectionById(int id);
         void AddProjection(Projection projection);
+        void RemoveProjection(int id);
 
-        IReadOnlyList<Ticket> GetAllTickets();
+        List<Ticket> GetAllTickets();
         Ticket GetTicketById(int id);
+
         void AddTicket(Ticket ticket);
+        void RemoveTicket(int id);
     }
 }
