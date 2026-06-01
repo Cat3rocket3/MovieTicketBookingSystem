@@ -29,6 +29,7 @@ namespace MovieTickets.Application
                 Console.WriteLine("Welcome to the Movie Theater!");
                 Console.WriteLine("1. Movies");
                 Console.WriteLine("2. Halls");
+                Console.WriteLine("3. Projections");
                 Console.WriteLine("0. Exit");
                 switch (Console.ReadLine())
                 {
@@ -38,10 +39,10 @@ namespace MovieTickets.Application
                     case "2":
                         HallMenu();
                         break;
-                    //case "3":
-                       
-                    //    RemoveMovie();
-                    //    break;
+                    case "3":
+
+                        ProjectionMenu();
+                        break;
                     //case "4":
                     //    ShowHalls();
                     //    break;
@@ -77,10 +78,10 @@ namespace MovieTickets.Application
                 switch (Console.ReadLine())
                 {
                     case "1":
-                        AddMovie();
+                       AddHall();
                         break;
                     case "2":
-                        RemoveMovie();
+                        RemoveHall();
                         break;
                     case "0":
                         running = false;
@@ -126,6 +127,7 @@ namespace MovieTickets.Application
             {
                 return;
             }
+            ShowHalls();
             Console.Write("Enter Hall ID to remove: ");
             int id = int.Parse(Console.ReadLine());
             movieService.RemoveHall(id);
@@ -191,6 +193,99 @@ namespace MovieTickets.Application
             Console.Write("Enter movie ID to remove: ");
             int id = int.Parse(Console.ReadLine());
             movieService.RemoveMovie(id);
+        }
+
+        private void ProjectionMenu()
+        {
+            bool running = true;
+
+            while (running)
+            {
+                ShowProjections();
+
+                Console.WriteLine();
+                Console.WriteLine("1. Add projection");
+                Console.WriteLine("2. Remove projection");
+                Console.WriteLine("0. Back");
+
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        AddProjection();
+                        break;
+
+                    case "2":
+                        RemoveProjection();
+                        break;
+
+                    case "0":
+                        running = false;
+                        return;
+
+                    default:
+                        Console.WriteLine("Invalid option. Try again.");
+                        break;
+                }
+            }
+        }
+
+        public void ShowProjections()
+        {
+            var projections = movieService.GetAllProjections();
+
+            Console.WriteLine("Projections:");
+
+            if (projections.Count == 0)
+            {
+                Console.WriteLine("(No projections at this moment)");
+                return;
+            }
+
+            foreach (var p in projections)
+            {
+                Console.WriteLine(
+                    $"└─ID:{p.Id} | Movie: {p.Movie?.Name ?? "N/A"} | " +
+                    $"Hall:{p.HallId} | Price:{p.Price} | Date:{p.Date}"
+                );
+            }
+        }
+
+        public void AddProjection()
+        {
+            Console.WriteLine("Available movies:");
+            ShowMovies();
+
+            Console.Write("Enter Movie ID: ");
+            int movieId = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Available halls:");
+            ShowHalls();
+
+            Console.Write("Enter Hall ID: ");
+            int hallId = int.Parse(Console.ReadLine());
+
+            Console.Write("Enter price: ");
+            decimal price = decimal.Parse(Console.ReadLine());
+
+            Console.Write("Enter date (yyyy-MM-dd HH:mm): ");
+            DateTime date = DateTime.Parse(Console.ReadLine());
+
+            movieService.AddProjection(movieId, hallId, price, date);
+        }
+
+        public void RemoveProjection()
+        {
+            ShowProjections();
+
+            if (movieService.GetAllProjections().Count == 0)
+            {
+                return;
+            }
+
+            Console.Write("Enter Projection ID to remove: ");
+            int id = int.Parse(Console.ReadLine());
+
+            movieService.RemoveProjection(id);
         }
     }
 }

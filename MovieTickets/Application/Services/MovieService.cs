@@ -66,5 +66,42 @@ namespace MovieTickets.Application.Services
         {
             repository.RemoveHall(id);
         }
+
+        public IReadOnlyList<Projection> GetAllProjections()
+        {
+            return repository.GetAllProjections();
+        }
+
+        public void AddProjection(int movieId, int hallId, decimal price, DateTime date)
+        {
+            // optional validation (recommended)
+            var movie = repository.GetMovieById(movieId);
+            var hall = repository.GetHallById(hallId);
+
+            if (movie == null)
+                throw new Exception("Movie not found");
+
+            if (hall == null)
+                throw new Exception("Hall not found");
+
+            Projection projection = new Projection
+            {
+                MovieId = movieId,
+                HallId = hallId,
+                Price = price,
+                Date = date,
+                Movie = movie,
+                Hall = hall,
+                Tickets = new List<Ticket>()
+            };
+
+            repository.AddProjection(projection);
+        }
+
+        public void RemoveProjection(int id)
+        {
+            repository.RemoveProjection(id);
+         
+        }
     }
 }

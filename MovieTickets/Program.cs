@@ -18,7 +18,14 @@ namespace MovieTickets
 
         static void Main(string[] args)
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer("Server=K207\\SQLEXPRESS;Database=MovieTickets;Integrated Security=True;").EnableSensitiveDataLogging().Options;
+
+            //var options = new DbContextOptionsBuilder<AppDbContext>().UseSqlServer("Server=K207\\SQLEXPRESS;Database=MovieTickets;Integrated Security=True;").EnableSensitiveDataLogging().Options;
+
+
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+    .UseSqlServer("Server=localhost,1433;Database=MovieTickets;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True")
+    .EnableSensitiveDataLogging()
+    .Options;
 
             var db = new AppDbContext(options);
 
