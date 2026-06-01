@@ -23,48 +23,35 @@ namespace MovieTickets.Application
 
         public void ShowMainMenu()
         {
-
-
-
-
-
-
-
-
-
             bool running = true;
             while (running)
             {
                 Console.WriteLine("Welcome to the Movie Theater!");
-                Console.WriteLine("1. View Movies");
-                Console.WriteLine("2. Add Movie");
-                Console.WriteLine("3. Remove Movie");
-                Console.WriteLine("4. View Halls");
-                Console.WriteLine("5. Add Hall");
-                Console.WriteLine("6. Remove Hall");
+                Console.WriteLine("1. Movies");
+                Console.WriteLine("2. Halls");
                 Console.WriteLine("0. Exit");
                 switch (Console.ReadLine())
                 {
                     case "1":
-                        ShowMovies();
+                        MovieMenu();
                         break;
                     case "2":
-                        AddMovie();
+                        HallMenu();
                         break;
-                    case "3":
+                    //case "3":
                        
-                        RemoveMovie();
-                        break;
-                    case "4":
-                        ShowHalls();
-                        break;
-                    case "5":
-                        AddHall();
-                        break;
-                    case "6":
-                        ShowHalls();
-                        RemoveHall();
-                        break;
+                    //    RemoveMovie();
+                    //    break;
+                    //case "4":
+                    //    ShowHalls();
+                    //    break;
+                    //case "5":
+                    //    AddHall();
+                    //    break;
+                    //case "6":
+                    //    ShowHalls();
+                    //    RemoveHall();
+                    //    break;
                     case "0":
                         Console.WriteLine("Goodbye!");
                         running = false;
@@ -75,6 +62,62 @@ namespace MovieTickets.Application
                 }
             }
 
+        }
+
+        private void HallMenu()
+        {
+            bool running = true;
+            while (running)
+            {
+                ShowHalls();
+                Console.WriteLine();
+                Console.WriteLine("1. Add hall");
+                Console.WriteLine("2. Remove hall");
+                Console.WriteLine("0. Back");
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        AddMovie();
+                        break;
+                    case "2":
+                        RemoveMovie();
+                        break;
+                    case "0":
+                        running = false;
+                        return;
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
+        }
+
+        private void MovieMenu()
+        {
+            bool running = true;
+            while (running)
+            {
+                ShowMovies();
+                Console.WriteLine();
+                Console.WriteLine("1. Add movie");
+                Console.WriteLine("2. Remove movie");
+                Console.WriteLine("0. Back");
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        AddMovie();
+                        break;
+                    case "2":
+                        RemoveMovie();
+                        break;
+                    case "0":
+                        running = false;
+                        return;
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
         }
 
         private void RemoveHall()
@@ -124,7 +167,7 @@ namespace MovieTickets.Application
             }
             foreach (var movie in movies)
             {
-                Console.WriteLine($"{movie.Id}. {movie.Name} ({movie.Duration} mins)");
+                Console.WriteLine($"└─ID:{movie.Id} | {movie.Name} ({movie.Duration} mins)");
             }
         }
 
