@@ -123,6 +123,7 @@ namespace MovieTickets.Application
             }
         }
 
+
         private void RemoveHall()
         {
             if (movieService.GetAllHalls().Count == 0)

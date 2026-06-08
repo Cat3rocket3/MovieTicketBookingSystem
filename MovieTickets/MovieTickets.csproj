@@ -193,6 +193,10 @@
     <Compile Include="Migrations\20260601102647_init.Designer.cs">
       <DependentUpon>20260601102647_init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20260608122539_init3.cs" />
+    <Compile Include="Migrations\20260608122539_init3.Designer.cs">
+      <DependentUpon>20260608122539_init3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AppDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MovieTickets.Application.interfaces;
 using MovieTickets.Data;
 using MovieTickets.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +20,7 @@ namespace MovieTickets.Infrastructure
         {
             this.db = db;
         }
+
 
         public IReadOnlyList<Movie> GetAllMovies()
         {
@@ -101,7 +104,17 @@ namespace MovieTickets.Infrastructure
 
         public IReadOnlyList<Projection> GetAllProjections()
         {
-            return db.Projections.ToList();
+           
+            return db.Projections
+                .Include(p => p.Tickets)
+                .ThenInclude(t => t.Seat)
+                .ToList();
+        }
+
+        public void UpdateTicket(Ticket ticket)
+        {
+           db.Tickets.Update(ticket);
+            db.SaveChanges();
         }
 
         public Projection GetProjectionById(int id)
@@ -159,6 +172,16 @@ namespace MovieTickets.Infrastructure
         {
             db.Tickets.Add(ticket);
             db.SaveChanges();
+        }
+
+        List<Ticket> ITheaterRepository.GetAllTickets()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveTicket(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

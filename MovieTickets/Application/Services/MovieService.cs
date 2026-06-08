@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 
 namespace MovieTickets.Application.Services
@@ -14,10 +15,29 @@ namespace MovieTickets.Application.Services
     {
         private readonly ITheaterRepository repository;
 
+        public object TicketStatus { get; private set; }
 
         public MovieService(ITheaterRepository repository)
         {
             this.repository = repository;
+        }
+
+        public void BuyTicket(int projectionId, int seatId)
+        {
+            Projection projection = repository.GetProjectionById(projectionId);
+
+            Ticket ticket = projection.Tickets
+                .FirstOrDefault(t => t.SeatId == seatId);
+
+            if (ticket == null)
+                throw new Exception("Seat not found");
+
+            if (ticket.IsSold)
+                throw new Exception("Seat already sold");
+
+            ticket.IsSold = true;
+
+            repository.UpdateTicket(ticket);
         }
 
         public void AddMovie(string title, int duration)
@@ -74,7 +94,6 @@ namespace MovieTickets.Application.Services
 
         public void AddProjection(int movieId, int hallId, decimal price, DateTime date)
         {
-            // optional validation (recommended)
             var movie = repository.GetMovieById(movieId);
             var hall = repository.GetHallById(hallId);
 
@@ -94,6 +113,19 @@ namespace MovieTickets.Application.Services
                 Hall = hall,
                 Tickets = new List<Ticket>()
             };
+
+            foreach (Seat seat in hall.Seats)
+            {
+                Ticket ticket = new Ticket
+                {
+                    Seat = seat,
+                    SeatId = seat.Id,
+                    Price = price,
+                    IsSold = false
+                };
+
+                projection.Tickets.Add(ticket);
+            }
 
             repository.AddProjection(projection);
         }
