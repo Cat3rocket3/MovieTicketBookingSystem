@@ -31,5 +31,6 @@ namespace MovieTickets.Application.interfaces
 
         void AddTicket(Ticket ticket);
         void RemoveTicket(int id);
+        void UpdateTicket(Ticket ticket);
     }
 }

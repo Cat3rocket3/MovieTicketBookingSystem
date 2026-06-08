@@ -22,12 +22,22 @@ namespace MovieTickets.Data
         public virtual DbSet<Ticket> Tickets { get; set; }
 
         // 2. OnConfiguring allows the 'Add-Migration' command to find the DB
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        // Update this string if your local SQL Server instance is different
+        //        optionsBuilder.UseSqlServer("Data Source=localhost,1433;Database=MovieTickets;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True");
+        //    }
+        //}
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // Update this string if your local SQL Server instance is different
-                optionsBuilder.UseSqlServer("Data Source=localhost,1433;Database=MovieTickets;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer(
+                    "Server=K207\\SQLEXPRESS;Database=MovieTickets;Trusted_Connection=True;TrustServerCertificate=True"
+                );
             }
         }
 
