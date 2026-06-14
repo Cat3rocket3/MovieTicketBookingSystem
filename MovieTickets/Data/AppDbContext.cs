@@ -5,7 +5,6 @@ namespace MovieTickets.Data
 {
     public partial class AppDbContext : DbContext
     {
-        // 1. Parameterless constructor (Crucial for Design-Time tools)
         public AppDbContext()
         {
         }
@@ -20,62 +19,74 @@ namespace MovieTickets.Data
         public virtual DbSet<Seat> Seats { get; set; }
         public virtual DbSet<Projection> Projections { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Genre> Genres { get; set; }
 
-        // 2. OnConfiguring allows the 'Add-Migration' command to find the DB
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        // Update this string if your local SQL Server instance is different
-        //        optionsBuilder.UseSqlServer("Data Source=localhost,1433;Database=MovieTickets;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True");
-        //    }
-        //}
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(
-                    "Server=K207\\SQLEXPRESS;Database=MovieTickets;Trusted_Connection=True;TrustServerCertificate=True"
-                );
+                
+                optionsBuilder.UseSqlServer("Data Source=192.168.1.8,1433;Database=MovieTickets;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True");
             }
         }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseSqlServer(
+        //            "Server=K207\\SQLEXPRESS;Database=MovieTickets;Trusted_Connection=True;TrustServerCertificate=True"
+        //        );
+        //    }
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Relationship Configurations
+            modelBuilder.Entity<Movie>(entity =>
+            {
+                entity.HasOne(m => m.Genre)
+                    .WithMany(g => g.Movies)
+                    .HasForeignKey(m => m.GenreId);
+            });
+
             modelBuilder.Entity<Projection>(entity =>
             {
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
-                entity.HasOne(d => d.Movie)
-                    .WithMany(p => p.Projections)
-                    .HasForeignKey(d => d.MovieId);
+                entity.HasOne(p => p.Movie)
+                    .WithMany(m => m.Projections)
+                    .HasForeignKey(p => p.MovieId);
 
-                entity.HasOne(d => d.Hall)
-                    .WithMany(p => p.Projections)
-                    .HasForeignKey(d => d.HallId);
+                entity.HasOne(p => p.Hall)
+                    .WithMany(h => h.Projections)
+                    .HasForeignKey(p => p.HallId);
             });
 
             modelBuilder.Entity<Seat>(entity =>
             {
-                entity.HasOne(d => d.Hall)
-                    .WithMany(p => p.Seats)
-                    .HasForeignKey(d => d.HallId);
+                entity.HasOne(s => s.Hall)
+                    .WithMany(h => h.Seats)
+                    .HasForeignKey(s => s.HallId);
             });
 
             modelBuilder.Entity<Ticket>(entity =>
             {
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
-                entity.HasOne(d => d.Projection)
+                entity.HasOne(t => t.Projection)
                     .WithMany(p => p.Tickets)
-                    .HasForeignKey(d => d.ProjectionId);
+                    .HasForeignKey(t => t.ProjectionId);
 
-                entity.HasOne(d => d.Seat)
+                entity.HasOne(t => t.Seat)
                     .WithMany()
-                    .HasForeignKey(d => d.SeatId)
+                    .HasForeignKey(t => t.SeatId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(t => t.User)
+                    .WithMany(u => u.Tickets)
+                    .HasForeignKey(t => t.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             OnModelCreatingPartial(modelBuilder);

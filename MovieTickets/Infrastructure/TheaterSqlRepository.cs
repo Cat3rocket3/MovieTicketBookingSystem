@@ -5,43 +5,29 @@ using MovieTickets.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MovieTickets.Infrastructure
 {
-    internal class TheaterSqlRepository : MovieTickets.Application.interfaces.ITheaterRepository
+    internal class TheaterSqlRepository : ITheaterRepository
     {
-        AppDbContext db;
+        private readonly AppDbContext db;
 
-       
         public TheaterSqlRepository(AppDbContext db)
         {
             this.db = db;
         }
 
+        // ================= MOVIES =================
 
         public IReadOnlyList<Movie> GetAllMovies()
         {
-            
             return db.Movies.ToList();
         }
 
         public Movie GetMovieById(int id)
         {
-          
-            foreach (Movie movie in db.Movies)
-            {
-                if (movie.Id == id)
-                {
-                    return movie;
-                }
-            }
-
-            return null;
+            return db.Movies.FirstOrDefault(m => m.Id == id);
         }
-
 
         public void AddMovie(Movie movie)
         {
@@ -51,34 +37,29 @@ namespace MovieTickets.Infrastructure
 
         public void RemoveMovie(int id)
         {
-            var movie = GetMovieById(id);
-            if (movie != null)
-            {
-                db.Movies.Remove(movie);
+            Movie movie = GetMovieById(id);
 
-                db.SaveChanges();
-                Console.WriteLine("Movie removed.");
-            }
+            if (movie == null)
+                throw new Exception("Movie not found.");
 
-            else Console.WriteLine("Movie with this ID does not exist.");
+            db.Movies.Remove(movie);
+            db.SaveChanges();
         }
+
+        // ================= HALLS =================
 
         public IReadOnlyList<Hall> GetAllHalls()
         {
-            return db.Halls.Include(h => h.Seats).ToList();
+            return db.Halls
+                .Include(h => h.Seats)
+                .ToList();
         }
 
         public Hall GetHallById(int id)
         {
-            foreach (Hall hall in db.Halls)
-            {
-                if (hall.Id == id)
-                {
-                    return hall;
-                }
-            }
-
-            return null;
+            return db.Halls
+                .Include(h => h.Seats)
+                .FirstOrDefault(h => h.Id == id);
         }
 
         public void AddHall(Hall hall)
@@ -89,45 +70,35 @@ namespace MovieTickets.Infrastructure
 
         public void RemoveHall(int id)
         {
-            var hall = GetHallById(id);
-            if (hall != null)
-            {
+            Hall hall = GetHallById(id);
 
-                db.Halls.Remove(hall);
-                db.SaveChanges();
-            }
+            if (hall == null)
+                throw new Exception("Hall not found.");
 
-            else Console.WriteLine("Hall with this ID does not exist.");
+            db.Halls.Remove(hall);
+            db.SaveChanges();
         }
 
-
+        // ================= PROJECTIONS =================
 
         public IReadOnlyList<Projection> GetAllProjections()
         {
-           
             return db.Projections
+                .Include(p => p.Movie)
+                .Include(p => p.Hall)
                 .Include(p => p.Tickets)
-                .ThenInclude(t => t.Seat)
+                    .ThenInclude(t => t.Seat)
                 .ToList();
-        }
-
-        public void UpdateTicket(Ticket ticket)
-        {
-           db.Tickets.Update(ticket);
-            db.SaveChanges();
         }
 
         public Projection GetProjectionById(int id)
         {
-            foreach (Projection projection in db.Projections)
-            {
-                if (projection.Id == id)
-                {
-                    return projection;
-                }
-            }
-
-            return null;
+            return db.Projections
+                .Include(p => p.Movie)
+                .Include(p => p.Hall)
+                .Include(p => p.Tickets)
+                    .ThenInclude(t => t.Seat)
+                .FirstOrDefault(p => p.Id == id);
         }
 
         public void AddProjection(Projection projection)
@@ -138,34 +109,43 @@ namespace MovieTickets.Infrastructure
 
         public void RemoveProjection(int id)
         {
-            var projection = GetProjectionById(id);
-            if (projection != null)
-            {
+            Projection projection = GetProjectionById(id);
 
-                db.Projections.Remove(projection);
-                db.SaveChanges();
+            if (projection == null)
+                throw new Exception("Projection not found.");
+
+            if (projection.Tickets != null)
+            {
+                db.Tickets.RemoveRange(projection.Tickets);
             }
 
-            else Console.WriteLine("Hall with this ID does not exist.");
+            db.Projections.Remove(projection);
+            db.SaveChanges();
         }
 
-        public IReadOnlyList<Ticket> GetAllTickets()
-        {
+        // ================= TICKETS =================
 
-            return db.Tickets.ToList();
+        public List<Ticket> GetAllTickets()
+        {
+            return db.Tickets
+                .Include(t => t.Projection)
+                    .ThenInclude(p => p.Movie)
+                .Include(t => t.Projection)
+                    .ThenInclude(p => p.Hall)
+                .Include(t => t.Seat)
+                .Include(t => t.User)
+                .ToList();
         }
 
         public Ticket GetTicketById(int id)
         {
-            foreach (Ticket ticket in db.Tickets)
-            {
-                if (ticket.Id == id)
-                {
-                    return ticket;
-                }
-            }
-
-            return null;
+            return db.Tickets
+                .Include(t => t.Projection)
+                    .ThenInclude(p => p.Movie)
+                .Include(t => t.Projection)
+                    .ThenInclude(p => p.Hall)
+                .Include(t => t.Seat)
+                .FirstOrDefault(t => t.Id == id);
         }
 
         public void AddTicket(Ticket ticket)
@@ -174,14 +154,21 @@ namespace MovieTickets.Infrastructure
             db.SaveChanges();
         }
 
-        List<Ticket> ITheaterRepository.GetAllTickets()
-        {
-            throw new NotImplementedException();
-        }
-
         public void RemoveTicket(int id)
         {
-            throw new NotImplementedException();
+            Ticket ticket = GetTicketById(id);
+
+            if (ticket == null)
+                throw new Exception("Ticket not found.");
+
+            db.Tickets.Remove(ticket);
+            db.SaveChanges();
+        }
+
+        public void UpdateTicket(Ticket ticket)
+        {
+            db.Tickets.Update(ticket);
+            db.SaveChanges();
         }
     }
 }
