@@ -947,6 +947,7 @@ namespace MovieTickets.Application
             PrintLine();
             Console.ResetColor();
         }
+        //mazna
 
     }
 }
