@@ -175,12 +175,14 @@
     <Compile Include="Application\Services\MovieService.cs" />
     <Compile Include="Application\UI.cs" />
     <Compile Include="Data\AppDbContext.cs" />
+    <Compile Include="Domain\Entities\Genre.cs" />
     <Compile Include="Domain\Entities\Hall.cs" />
     <Compile Include="Domain\Entities\Movie.cs" />
     <Compile Include="Domain\Entities\Seat.cs" />
     <Compile Include="Domain\Entities\Projection.cs" />
     <Compile Include="Domain\Entities\Theater.cs" />
     <Compile Include="Domain\Entities\Ticket.cs" />
+    <Compile Include="Domain\Entities\User.cs" />
     <Compile Include="Infrastructure\FileStorage.cs" />
     <Compile Include="Infrastructure\TheaterRepository.cs" />
     <Compile Include="Infrastructure\TheaterSqlRepository.cs" />
@@ -196,6 +198,14 @@
     <Compile Include="Migrations\20260608122539_init3.cs" />
     <Compile Include="Migrations\20260608122539_init3.Designer.cs">
       <DependentUpon>20260608122539_init3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20260614135910_init2.cs" />
+    <Compile Include="Migrations\20260614135910_init2.Designer.cs">
+      <DependentUpon>20260614135910_init2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20260614150428_AddSeatNumber.cs" />
+    <Compile Include="Migrations\20260614150428_AddSeatNumber.Designer.cs">
+      <DependentUpon>20260614150428_AddSeatNumber.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\AppDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
