@@ -207,6 +207,10 @@
     <Compile Include="Migrations\20260614150428_AddSeatNumber.Designer.cs">
       <DependentUpon>20260614150428_AddSeatNumber.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20260615100138_anotherMigration.cs" />
+    <Compile Include="Migrations\20260615100138_anotherMigration.Designer.cs">
+      <DependentUpon>20260615100138_anotherMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AppDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
