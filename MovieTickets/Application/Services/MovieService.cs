@@ -196,47 +196,60 @@ namespace MovieTickets.Application.Services
             repository.UpdateTicket(ticket);
         }
 
-        public void PayTicket(int ticketId)
+        public void PayTicket(int projectionId, int seatNumber)
         {
-            Ticket ticket = repository.GetTicketById(ticketId);
+            Projection projection = repository.GetProjectionById(projectionId);
+
+            if (projection == null)
+                throw new Exception("Projection not found.");
+
+            Ticket ticket = projection.Tickets
+                .FirstOrDefault(t => t.Seat.Number == seatNumber);
 
             if (ticket == null)
-                throw new Exception("Ticket not found.");
+                throw new Exception("Seat not found.");
 
             if (ticket.IsCancelled)
-                throw new Exception("Cannot pay cancelled ticket.");
+                throw new Exception("Ticket is cancelled.");
 
             if (!ticket.IsReserved)
-                throw new Exception("Ticket must be reserved before payment.");
+                throw new Exception("Ticket must be reserved first.");
 
             if (ticket.IsPaid)
-                throw new Exception("Ticket is already paid.");
+                throw new Exception("Ticket already paid.");
 
             ticket.IsPaid = true;
 
             repository.UpdateTicket(ticket);
         }
 
-        public void CancelReservation(int ticketId)
+        public void CancelReservation(int projectionId, int seatNumber)
         {
-            Ticket ticket = repository.GetTicketById(ticketId);
+            Projection projection = repository.GetProjectionById(projectionId);
+
+            if (projection == null)
+                throw new Exception("Projection not found.");
+
+            Ticket ticket = projection.Tickets
+                .FirstOrDefault(t => t.Seat.Number == seatNumber);
 
             if (ticket == null)
-                throw new Exception("Ticket not found.");
-
-            if (!ticket.IsReserved)
-                throw new Exception("Ticket is not reserved.");
+                throw new Exception("Seat not found.");
 
             if (ticket.IsPaid)
                 throw new Exception("Paid ticket cannot be cancelled.");
 
+            if (!ticket.IsReserved)
+                throw new Exception("Ticket is not reserved.");
+
             ticket.IsReserved = false;
             ticket.IsPaid = false;
-            ticket.IsCancelled = true;
-            ticket.UserId = null;
+            ticket.IsCancelled = false; // important
 
             repository.UpdateTicket(ticket);
         }
+
+
 
         public string GenerateTicketText(int ticketId)
         {
@@ -281,6 +294,23 @@ namespace MovieTickets.Application.Services
                 return "RESERVED";
 
             return "FREE";
+        }
+
+
+        public string GenerateTicketText(int projectionId, int seatNumber)
+        {
+            Projection projection = repository.GetProjectionById(projectionId);
+
+            if (projection == null)
+                throw new Exception("Projection not found.");
+
+            Ticket ticket = projection.Tickets
+                .FirstOrDefault(t => t.Seat != null && t.Seat.Number == seatNumber);
+
+            if (ticket == null)
+                throw new Exception("Seat not found.");
+
+            return GenerateTicketText(ticket.Id);
         }
     }
 }

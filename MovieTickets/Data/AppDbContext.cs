@@ -23,23 +23,23 @@ namespace MovieTickets.Data
         public virtual DbSet<Genre> Genres { get; set; }
 
         
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                
-                optionsBuilder.UseSqlServer("Data Source=192.168.1.8,1433;Database=MovieTickets;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True");
-            }
-        }
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    if (!optionsBuilder.IsConfigured)
         //    {
-        //        optionsBuilder.UseSqlServer(
-        //            "Server=K207\\SQLEXPRESS;Database=MovieTickets;Trusted_Connection=True;TrustServerCertificate=True"
-        //        );
+                
+        //        optionsBuilder.UseSqlServer("Data Source=192.168.1.8,1433;Database=MovieTickets;Initial Catalog=MovieTicketsDb;User ID=sa;Password=144g144gG@;Encrypt=True;TrustServerCertificate=True");
         //    }
         //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(
+                    "Server=K207\\SQLEXPRESS;Database=MovieTickets;Trusted_Connection=True;TrustServerCertificate=True"
+                );
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

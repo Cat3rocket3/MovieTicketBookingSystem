@@ -431,16 +431,14 @@ namespace MovieTickets.Application
         {
             PrintHeader("SEARCH PROJECTIONS");
 
-            Console.Write("Movie name: ");
-            string search = Console.ReadLine();
+            Console.WriteLine("Available movies:");
+            ShowMovies();
+            Console.WriteLine();
 
-            if (search == null)
-                search = "";
-
-            search = search.ToLower();
+            int movieId = ReadInt("Movie ID: ");
 
             var results = movieService.GetAllProjections()
-                .Where(p => p.Movie != null && p.Movie.Name.ToLower().Contains(search))
+                .Where(p => p.MovieId == movieId)
                 .ToList();
 
             if (results.Count == 0)
@@ -452,8 +450,10 @@ namespace MovieTickets.Application
 
             foreach (Projection p in results)
             {
+                string movieName = p.Movie == null ? "N/A" : p.Movie.Name;
+
                 Console.WriteLine(
-                    $"ID: {p.Id} | Movie: {p.Movie.Name} | Hall: {p.HallId} | Price: {p.Price} lv | Date: {p.Date:yyyy-MM-dd HH:mm}"
+                    $"ID: {p.Id} | Movie: {movieName} | Hall: {p.HallId} | Price: {p.Price} lv | Date: {p.Date:yyyy-MM-dd HH:mm}"
                 );
             }
 
@@ -587,15 +587,36 @@ namespace MovieTickets.Application
 
         private void PayTicket()
         {
-            PrintHeader("PAY TICKET");
+            Console.Clear();
+            PrintTitle("PAY TICKET");
 
-            ShowAllTicketsShort();
+            ShowProjections();
 
-            int ticketId = ReadInt("Ticket ID to pay: ");
+            if (movieService.GetAllProjections().Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int projectionId = ReadInt("Projection ID: ");
+
+            Projection projection = movieService.GetAllProjections()
+                .FirstOrDefault(p => p.Id == projectionId);
+
+            if (projection == null)
+            {
+                PrintError("Projection not found.");
+                Pause();
+                return;
+            }
+
+            PrintSeats(projection);
+
+            int seatNumber = ReadInt("Seat number: ");
 
             try
             {
-                movieService.PayTicket(ticketId);
+                movieService.PayTicket(projectionId, seatNumber);
                 PrintSuccess("Ticket paid.");
             }
             catch (Exception ex)
@@ -608,16 +629,31 @@ namespace MovieTickets.Application
 
         private void CancelReservation()
         {
-            PrintHeader("CANCEL RESERVATION");
+            Console.Clear();
+            PrintTitle("CANCEL TICKET");
 
-            ShowAllTicketsShort();
+            ShowProjections();
 
-            int ticketId = ReadInt("Ticket ID to cancel: ");
+            int projectionId = ReadInt("Projection ID: ");
+
+            Projection projection = movieService.GetAllProjections()
+                .FirstOrDefault(p => p.Id == projectionId);
+
+            if (projection == null)
+            {
+                PrintError("Projection not found.");
+                Pause();
+                return;
+            }
+
+            PrintSeats(projection);
+
+            int seatNumber = ReadInt("Seat number: ");
 
             try
             {
-                movieService.CancelReservation(ticketId);
-                PrintSuccess("Reservation cancelled.");
+                movieService.CancelReservation(projectionId, seatNumber);
+                PrintSuccess("Ticket cancelled.");
             }
             catch (Exception ex)
             {
@@ -629,15 +665,36 @@ namespace MovieTickets.Application
 
         private void PrintTicketText()
         {
-            PrintHeader("GENERATE TICKET");
+            Console.Clear();
+            PrintTitle("GENERATE TICKET");
 
-            ShowAllTicketsShort();
+            ShowProjections();
 
-            int ticketId = ReadInt("Ticket ID: ");
+            if (movieService.GetAllProjections().Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int projectionId = ReadInt("Projection ID: ");
+
+            Projection projection = movieService.GetAllProjections()
+                .FirstOrDefault(p => p.Id == projectionId);
+
+            if (projection == null)
+            {
+                PrintError("Projection not found.");
+                Pause();
+                return;
+            }
+
+            PrintSeats(projection);
+
+            int seatNumber = ReadInt("Seat number: ");
 
             try
             {
-                string text = movieService.GenerateTicketText(ticketId);
+                string text = movieService.GenerateTicketText(projectionId, seatNumber);
 
                 Console.WriteLine();
                 Console.WriteLine(text);
