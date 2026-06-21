@@ -25,7 +25,7 @@ namespace MovieTickets.Application.Services
             return repository.GetTicketById(id);
         }
 
-        public void ReserveTicket(int projectionId, int seatNumber)
+        public void ReserveTicket(int projectionId, int seatNumber, int? userId = null)
         {
             Projection projection = repository.GetProjectionById(projectionId);
 
@@ -47,6 +47,7 @@ namespace MovieTickets.Application.Services
             ticket.IsReserved = true;
             ticket.IsPaid = false;
             ticket.IsCancelled = false;
+            ticket.UserId = userId;
 
             repository.UpdateTicket(ticket);
         }
@@ -99,9 +100,20 @@ namespace MovieTickets.Application.Services
 
             ticket.IsReserved = false;
             ticket.IsPaid = false;
-            ticket.IsCancelled = false; // important
+            ticket.IsCancelled = false; 
+            ticket.UserId = null;
 
             repository.UpdateTicket(ticket);
+        }
+
+        
+
+        public IReadOnlyList<Ticket> GetBookingHistory(int userId)
+        {
+            return repository.GetAllTickets()
+                .Where(t => t.UserId == userId)
+                .OrderByDescending(t => t.CreatedAt)
+                .ToList();
         }
     }
 }

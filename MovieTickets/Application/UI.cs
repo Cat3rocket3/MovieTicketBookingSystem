@@ -14,11 +14,27 @@ namespace MovieTickets.Application
         private readonly ProjectionService projectionService;
         private readonly TicketService ticketService;
         private readonly ReportService reportService;
+        private readonly GenreService genreService;
+        private readonly UserService userService;
 
 
-        public UI(MovieService service)
+        public UI(
+            MovieService movieService,
+            HallService hallService,
+            ProjectionService projectionService,
+            TicketService ticketService,
+            ReportService reportService,
+            GenreService genreService,
+            UserService userService)
         {
-            movieService = service;
+            this.movieService = movieService;
+            this.hallService = hallService;
+            this.projectionService = projectionService;
+            this.ticketService = ticketService;
+            this.reportService = reportService;
+            this.genreService = genreService;
+            this.userService = userService;
+
             Console.OutputEncoding = Encoding.UTF8;
         }
 
@@ -35,6 +51,8 @@ namespace MovieTickets.Application
                 Console.WriteLine("3. Projections");
                 Console.WriteLine("4. Tickets");
                 Console.WriteLine("5. Reports");
+                Console.WriteLine("6. Genres");
+                Console.WriteLine("7. Users");
                 Console.WriteLine("0. Exit");
                 PrintLine();
 
@@ -63,6 +81,14 @@ namespace MovieTickets.Application
                         ReportsMenu();
                         break;
 
+                    case "6":
+                        GenreMenu();
+                        break;
+
+                    case "7":
+                        UserMenu();
+                        break;
+
                     case "0":
                         PrintSuccess("Goodbye!");
                         running = false;
@@ -76,7 +102,7 @@ namespace MovieTickets.Application
             }
         }
 
-        // ================= MOVIES =================
+        
 
         private void MovieMenu()
         {
@@ -90,7 +116,8 @@ namespace MovieTickets.Application
 
                 Console.WriteLine();
                 Console.WriteLine("1. Add movie");
-                Console.WriteLine("2. Remove movie");
+                Console.WriteLine("2. Edit movie");
+                Console.WriteLine("3. Remove movie");
                 Console.WriteLine("0. Back");
                 PrintLine();
 
@@ -104,6 +131,10 @@ namespace MovieTickets.Application
                         break;
 
                     case "2":
+                        EditMovie();
+                        break;
+
+                    case "3":
                         RemoveMovie();
                         break;
 
@@ -131,7 +162,8 @@ namespace MovieTickets.Application
 
             foreach (Movie movie in movies)
             {
-                Console.WriteLine($"ID: {movie.Id} | {movie.Name} | {movie.Duration} minutes");
+                string genreName = movie.Genre == null ? "N/A" : movie.Genre.Name;
+                Console.WriteLine($"ID: {movie.Id} | {movie.Name} | {movie.Duration} minutes | Genre: {genreName}");
             }
         }
 
@@ -144,10 +176,61 @@ namespace MovieTickets.Application
 
             int duration = ReadInt("Duration in minutes: ");
 
+            int? genreId = ChooseGenreOptional();
+
             try
             {
-                movieService.AddMovie(title, duration);
+                movieService.AddMovie(title, duration, genreId);
                 PrintSuccess("Movie added.");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        private void EditMovie()
+        {
+            PrintHeader("EDIT MOVIE");
+
+            ShowMovies();
+
+            if (movieService.GetAllMovies().Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int id = ReadInt("Movie ID: ");
+
+            Movie movie = movieService.GetMovieById(id);
+
+            if (movie == null)
+            {
+                PrintError("Movie not found.");
+                Pause();
+                return;
+            }
+
+            Console.Write($"New title (leave empty to keep '{movie.Name}'): ");
+            string title = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(title))
+                title = movie.Name;
+
+            Console.Write($"New duration in minutes (leave empty to keep {movie.Duration}): ");
+            string durationInput = Console.ReadLine();
+            int duration = string.IsNullOrWhiteSpace(durationInput)
+                ? movie.Duration
+                : int.Parse(durationInput);
+
+            int? genreId = ChooseGenreOptional();
+
+            try
+            {
+                movieService.EditMovie(id, title, duration, genreId);
+                PrintSuccess("Movie updated.");
             }
             catch (Exception ex)
             {
@@ -184,7 +267,251 @@ namespace MovieTickets.Application
             Pause();
         }
 
-        // ================= HALLS =================
+       
+
+        private void GenreMenu()
+        {
+            bool running = true;
+
+            while (running)
+            {
+                PrintHeader("GENRES");
+
+                ShowGenres();
+
+                Console.WriteLine();
+                Console.WriteLine("1. Add genre");
+                Console.WriteLine("2. Remove genre");
+                Console.WriteLine("0. Back");
+                PrintLine();
+
+                Console.Write("Choose option: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        AddGenre();
+                        break;
+
+                    case "2":
+                        RemoveGenre();
+                        break;
+
+                    case "0":
+                        running = false;
+                        break;
+
+                    default:
+                        PrintError("Invalid option.");
+                        Pause();
+                        break;
+                }
+            }
+        }
+
+        private void ShowGenres()
+        {
+            IReadOnlyList<Genre> genres = genreService.GetAllGenres();
+
+            if (genres.Count == 0)
+            {
+                PrintMuted("No genres at this moment.");
+                return;
+            }
+
+            foreach (Genre genre in genres)
+            {
+                Console.WriteLine($"ID: {genre.Id} | {genre.Name}");
+            }
+        }
+
+        private void AddGenre()
+        {
+            PrintHeader("ADD GENRE");
+
+            Console.Write("Genre name: ");
+            string name = Console.ReadLine();
+
+            try
+            {
+                genreService.AddGenre(name);
+                PrintSuccess("Genre added.");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        private void RemoveGenre()
+        {
+            PrintHeader("REMOVE GENRE");
+
+            ShowGenres();
+
+            if (genreService.GetAllGenres().Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int id = ReadInt("Genre ID: ");
+
+            try
+            {
+                genreService.RemoveGenre(id);
+                PrintSuccess("Genre removed.");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        
+        private int? ChooseGenreOptional()
+        {
+            IReadOnlyList<Genre> genres = genreService.GetAllGenres();
+
+            if (genres.Count == 0)
+            {
+                PrintMuted("No genres defined yet (you can add one from the Genres menu).");
+                return null;
+            }
+
+            Console.WriteLine("Available genres:");
+            foreach (Genre genre in genres)
+            {
+                Console.WriteLine($"  ID: {genre.Id} | {genre.Name}");
+            }
+
+            Console.Write("Genre ID (leave empty for none): ");
+            string input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
+                return null;
+
+            if (int.TryParse(input, out int genreId))
+                return genreId;
+
+            return null;
+        }
+
+       
+
+        private void UserMenu()
+        {
+            bool running = true;
+
+            while (running)
+            {
+                PrintHeader("USERS");
+
+                ShowUsers();
+
+                Console.WriteLine();
+                Console.WriteLine("1. Add user");
+                Console.WriteLine("2. Remove user");
+                Console.WriteLine("0. Back");
+                PrintLine();
+
+                Console.Write("Choose option: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        AddUser();
+                        break;
+
+                    case "2":
+                        RemoveUser();
+                        break;
+
+                    case "0":
+                        running = false;
+                        break;
+
+                    default:
+                        PrintError("Invalid option.");
+                        Pause();
+                        break;
+                }
+            }
+        }
+
+        private void ShowUsers()
+        {
+            IReadOnlyList<User> users = userService.GetAllUsers();
+
+            if (users.Count == 0)
+            {
+                PrintMuted("No users at this moment.");
+                return;
+            }
+
+            foreach (User user in users)
+            {
+                Console.WriteLine($"ID: {user.Id} | {user.FullName} | {user.Email}");
+            }
+        }
+
+        private void AddUser()
+        {
+            PrintHeader("ADD USER");
+
+            Console.Write("Full name: ");
+            string fullName = Console.ReadLine();
+
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+
+            try
+            {
+                userService.AddUser(fullName, email);
+                PrintSuccess("User added.");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        private void RemoveUser()
+        {
+            PrintHeader("REMOVE USER");
+
+            ShowUsers();
+
+            if (userService.GetAllUsers().Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int id = ReadInt("User ID: ");
+
+            try
+            {
+                userService.RemoveUser(id);
+                PrintSuccess("User removed.");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+     
 
         private void HallMenu()
         {
@@ -199,6 +526,7 @@ namespace MovieTickets.Application
                 Console.WriteLine();
                 Console.WriteLine("1. Add hall");
                 Console.WriteLine("2. Remove hall");
+                Console.WriteLine("3. Manage seats");
                 Console.WriteLine("0. Back");
                 PrintLine();
 
@@ -213,6 +541,10 @@ namespace MovieTickets.Application
 
                     case "2":
                         RemoveHall();
+                        break;
+
+                    case "3":
+                        SeatMenu();
                         break;
 
                     case "0":
@@ -291,7 +623,112 @@ namespace MovieTickets.Application
             Pause();
         }
 
-        // ================= PROJECTIONS =================
+       
+
+        private void SeatMenu()
+        {
+            bool running = true;
+
+            while (running)
+            {
+                PrintHeader("MANAGE SEATS");
+
+                ShowHalls();
+
+                if (hallService.GetAllHalls().Count == 0)
+                {
+                    Pause();
+                    return;
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("1. Add seat to hall");
+                Console.WriteLine("2. Remove seat");
+                Console.WriteLine("0. Back");
+                PrintLine();
+
+                Console.Write("Choose option: ");
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        AddSeat();
+                        break;
+
+                    case "2":
+                        RemoveSeat();
+                        break;
+
+                    case "0":
+                        running = false;
+                        break;
+
+                    default:
+                        PrintError("Invalid option.");
+                        Pause();
+                        break;
+                }
+            }
+        }
+
+        private void AddSeat()
+        {
+            PrintHeader("ADD SEAT");
+
+            int hallId = ReadInt("Hall ID: ");
+            int row = ReadInt("Row: ");
+            int column = ReadInt("Column: ");
+
+            try
+            {
+                hallService.AddSeat(hallId, row, column);
+                PrintSuccess("Seat added.");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        private void RemoveSeat()
+        {
+            PrintHeader("REMOVE SEAT");
+
+            int hallId = ReadInt("Hall ID: ");
+
+            Hall hall = hallService.GetHallById(hallId);
+
+            if (hall == null)
+            {
+                PrintError("Hall not found.");
+                Pause();
+                return;
+            }
+
+            foreach (Seat seat in hall.Seats)
+            {
+                Console.WriteLine($"Seat ID: {seat.Id} | Row {seat.Row}, Column {seat.Column} (Number {seat.Number})");
+            }
+
+            int seatId = ReadInt("Seat ID to remove: ");
+
+            try
+            {
+                hallService.RemoveSeat(seatId);
+                PrintSuccess("Seat removed.");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+       
 
         private void ProjectionMenu()
         {
@@ -305,8 +742,9 @@ namespace MovieTickets.Application
 
                 Console.WriteLine();
                 Console.WriteLine("1. Add projection");
-                Console.WriteLine("2. Remove projection");
-                Console.WriteLine("3. Search projections");
+                Console.WriteLine("2. Edit projection");
+                Console.WriteLine("3. Remove projection");
+                Console.WriteLine("4. Search projections");
                 Console.WriteLine("0. Back");
                 PrintLine();
 
@@ -320,10 +758,14 @@ namespace MovieTickets.Application
                         break;
 
                     case "2":
-                        RemoveProjection();
+                        EditProjection();
                         break;
 
                     case "3":
+                        RemoveProjection();
+                        break;
+
+                    case "4":
                         SearchProjections();
                         break;
 
@@ -394,6 +836,54 @@ namespace MovieTickets.Application
             {
                 projectionService.AddProjection(movieId, hallId, price, date);
                 PrintSuccess("Projection added.");
+            }
+            catch (Exception ex)
+            {
+                PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        private void EditProjection()
+        {
+            PrintHeader("EDIT PROJECTION");
+
+            ShowProjections();
+
+            if (projectionService.GetAllProjections().Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int id = ReadInt("Projection ID: ");
+
+            Projection projection = projectionService.GetAllProjections()
+                .FirstOrDefault(p => p.Id == id);
+
+            if (projection == null)
+            {
+                PrintError("Projection not found.");
+                Pause();
+                return;
+            }
+
+            Console.WriteLine("Available movies:");
+            ShowMovies();
+            int movieId = ReadInt($"Movie ID (currently {projection.MovieId}): ");
+
+            Console.WriteLine("Available halls:");
+            ShowHalls();
+            int hallId = ReadInt($"Hall ID (currently {projection.HallId}): ");
+
+            decimal price = ReadDecimal($"Ticket price (currently {projection.Price}): ");
+            DateTime date = ReadDateTime("New date (yyyy-MM-dd HH:mm): ");
+
+            try
+            {
+                projectionService.EditProjection(id, movieId, hallId, price, date);
+                PrintSuccess("Projection updated.");
             }
             catch (Exception ex)
             {
@@ -477,6 +967,7 @@ namespace MovieTickets.Application
                 Console.WriteLine("3. Pay ticket");
                 Console.WriteLine("4. Cancel reservation");
                 Console.WriteLine("5. Generate ticket text");
+                Console.WriteLine("6. Booking history (by user)");
                 Console.WriteLine("0. Back");
                 PrintLine();
 
@@ -503,6 +994,10 @@ namespace MovieTickets.Application
 
                     case "5":
                         PrintTicketText();
+                        break;
+
+                    case "6":
+                        BookingHistory();
                         break;
 
                     case "0":
@@ -575,9 +1070,11 @@ namespace MovieTickets.Application
 
             int seatNumber = ReadInt("Seat number: ");
 
+            int? userId = ChooseUserOptional();
+
             try
             {
-                ticketService.ReserveTicket(projectionId, seatNumber);
+                ticketService.ReserveTicket(projectionId, seatNumber, userId);
                 PrintSuccess("Ticket reserved successfully.");
             }
             catch (Exception ex)
@@ -586,6 +1083,35 @@ namespace MovieTickets.Application
             }
 
             Pause();
+        }
+
+      
+        private int? ChooseUserOptional()
+        {
+            IReadOnlyList<User> users = userService.GetAllUsers();
+
+            if (users.Count == 0)
+            {
+                PrintMuted("No users registered yet (you can add one from the Users menu).");
+                return null;
+            }
+
+            Console.WriteLine("Registered users:");
+            foreach (User user in users)
+            {
+                Console.WriteLine($"  ID: {user.Id} | {user.FullName}");
+            }
+
+            Console.Write("User ID (leave empty for guest): ");
+            string input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
+                return null;
+
+            if (int.TryParse(input, out int userId))
+                return userId;
+
+            return null;
         }
 
         private void PayTicket()
@@ -705,6 +1231,47 @@ namespace MovieTickets.Application
             catch (Exception ex)
             {
                 PrintError(ex.Message);
+            }
+
+            Pause();
+        }
+
+        private void BookingHistory()
+        {
+            Console.Clear();
+            PrintTitle("BOOKING HISTORY");
+
+            ShowUsers();
+
+            if (userService.GetAllUsers().Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int userId = ReadInt("User ID: ");
+
+            IReadOnlyList<Ticket> tickets = ticketService.GetBookingHistory(userId);
+
+            if (tickets.Count == 0)
+            {
+                PrintMuted("No bookings found for this user.");
+                Pause();
+                return;
+            }
+
+            foreach (Ticket ticket in tickets)
+            {
+                string movieName = ticket.Projection == null || ticket.Projection.Movie == null
+                    ? "N/A"
+                    : ticket.Projection.Movie.Name;
+
+                string status = reportService.GetTicketStatus(ticket);
+                string seatInfo = ticket.Seat == null ? "N/A" : $"Row {ticket.Seat.Row}, Seat {ticket.Seat.Column}";
+
+                Console.WriteLine(
+                    $"Ticket ID: {ticket.Id} | Movie: {movieName} | Seat: {seatInfo} | Price: {ticket.Price} lv | Status: {status} | Booked: {ticket.CreatedAt:yyyy-MM-dd HH:mm}"
+                );
             }
 
             Pause();
@@ -913,7 +1480,7 @@ namespace MovieTickets.Application
             Pause();
         }
 
-       
+
 
         private int ReadInt(string message)
         {
@@ -1009,7 +1576,6 @@ namespace MovieTickets.Application
             PrintLine();
             Console.ResetColor();
         }
-        //mazna
 
     }
 }

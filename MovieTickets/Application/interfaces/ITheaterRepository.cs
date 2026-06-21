@@ -12,6 +12,7 @@ namespace MovieTickets.Application.interfaces
         IReadOnlyList<Movie> GetAllMovies();
         Movie GetMovieById(int id);
         void AddMovie(Movie movie);
+        void UpdateMovie(Movie movie);
         void RemoveMovie(int id);
 
         IReadOnlyList<Hall> GetAllHalls();
@@ -19,11 +20,14 @@ namespace MovieTickets.Application.interfaces
         void AddHall(Hall hall);
         void RemoveHall(int id);
 
-       
+        Seat GetSeatById(int id);
+        void AddSeat(Seat seat);
+        void RemoveSeat(int id);
 
         IReadOnlyList<Projection> GetAllProjections();
         Projection GetProjectionById(int id);
         void AddProjection(Projection projection);
+        void UpdateProjection(Projection projection);
         void RemoveProjection(int id);
 
         List<Ticket> GetAllTickets();
@@ -32,5 +36,15 @@ namespace MovieTickets.Application.interfaces
         void AddTicket(Ticket ticket);
         void RemoveTicket(int id);
         void UpdateTicket(Ticket ticket);
+
+        IReadOnlyList<Genre> GetAllGenres();
+        Genre GetGenreById(int id);
+        void AddGenre(Genre genre);
+        void RemoveGenre(int id);
+
+        IReadOnlyList<User> GetAllUsers();
+        User GetUserById(int id);
+        void AddUser(User user);
+        void RemoveUser(int id);
     }
 }
