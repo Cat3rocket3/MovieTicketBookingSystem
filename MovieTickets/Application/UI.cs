@@ -10,6 +10,11 @@ namespace MovieTickets.Application
     internal class UI
     {
         private readonly MovieService movieService;
+        private readonly HallService hallService;
+        private readonly ProjectionService projectionService;
+        private readonly TicketService ticketService;
+        private readonly ReportService reportService;
+
 
         public UI(MovieService service)
         {
@@ -224,7 +229,7 @@ namespace MovieTickets.Application
 
         private void ShowHalls()
         {
-            IReadOnlyList<Hall> halls = movieService.GetAllHalls();
+            IReadOnlyList<Hall> halls = hallService.GetAllHalls();
 
             if (halls.Count == 0)
             {
@@ -248,7 +253,7 @@ namespace MovieTickets.Application
 
             try
             {
-                movieService.AddHall(rows, columns);
+                hallService.AddHall(rows, columns);
                 PrintSuccess("Hall added.");
             }
             catch (Exception ex)
@@ -265,7 +270,7 @@ namespace MovieTickets.Application
 
             ShowHalls();
 
-            if (movieService.GetAllHalls().Count == 0)
+            if (hallService.GetAllHalls().Count == 0)
             {
                 Pause();
                 return;
@@ -275,7 +280,7 @@ namespace MovieTickets.Application
 
             try
             {
-                movieService.RemoveHall(id);
+                hallService.RemoveHall(id);
                 PrintSuccess("Hall removed.");
             }
             catch (Exception ex)
@@ -336,7 +341,7 @@ namespace MovieTickets.Application
 
         private void ShowProjections()
         {
-            IReadOnlyList<Projection> projections = movieService.GetAllProjections();
+            IReadOnlyList<Projection> projections = projectionService.GetAllProjections();
 
             if (projections.Count == 0)
             {
@@ -365,7 +370,7 @@ namespace MovieTickets.Application
                 return;
             }
 
-            if (movieService.GetAllHalls().Count == 0)
+            if (hallService.GetAllHalls().Count == 0)
             {
                 PrintError("You need to add a hall first.");
                 Pause();
@@ -387,7 +392,7 @@ namespace MovieTickets.Application
 
             try
             {
-                movieService.AddProjection(movieId, hallId, price, date);
+                projectionService.AddProjection(movieId, hallId, price, date);
                 PrintSuccess("Projection added.");
             }
             catch (Exception ex)
@@ -404,7 +409,7 @@ namespace MovieTickets.Application
 
             ShowProjections();
 
-            if (movieService.GetAllProjections().Count == 0)
+            if (projectionService.GetAllProjections().Count == 0)
             {
                 Pause();
                 return;
@@ -414,7 +419,7 @@ namespace MovieTickets.Application
 
             try
             {
-                movieService.RemoveProjection(id);
+                projectionService.RemoveProjection(id);
                 PrintSuccess("Projection removed.");
             }
             catch (Exception ex)
@@ -435,7 +440,7 @@ namespace MovieTickets.Application
 
             int movieId = ReadInt("Movie ID: ");
 
-            var results = movieService.GetAllProjections()
+            var results = projectionService.GetAllProjections()
                 .Where(p => p.MovieId == movieId)
                 .ToList();
 
@@ -518,7 +523,7 @@ namespace MovieTickets.Application
 
             ShowProjections();
 
-            if (movieService.GetAllProjections().Count == 0)
+            if (projectionService.GetAllProjections().Count == 0)
             {
                 Pause();
                 return;
@@ -526,7 +531,7 @@ namespace MovieTickets.Application
 
             int projectionId = ReadInt("Projection ID: ");
 
-            Projection projection = movieService.GetAllProjections()
+            Projection projection = projectionService.GetAllProjections()
                 .FirstOrDefault(p => p.Id == projectionId);
 
             if (projection == null)
@@ -548,7 +553,7 @@ namespace MovieTickets.Application
 
             ShowProjections();
 
-            if (movieService.GetAllProjections().Count == 0)
+            if (projectionService.GetAllProjections().Count == 0)
             {
                 Pause();
                 return;
@@ -556,7 +561,7 @@ namespace MovieTickets.Application
 
             int projectionId = ReadInt("Projection ID: ");
 
-            Projection projection = movieService.GetAllProjections()
+            Projection projection = projectionService.GetAllProjections()
                 .FirstOrDefault(p => p.Id == projectionId);
 
             if (projection == null)
@@ -572,7 +577,7 @@ namespace MovieTickets.Application
 
             try
             {
-                movieService.ReserveTicket(projectionId, seatNumber);
+                ticketService.ReserveTicket(projectionId, seatNumber);
                 PrintSuccess("Ticket reserved successfully.");
             }
             catch (Exception ex)
@@ -590,7 +595,7 @@ namespace MovieTickets.Application
 
             ShowProjections();
 
-            if (movieService.GetAllProjections().Count == 0)
+            if (projectionService.GetAllProjections().Count == 0)
             {
                 Pause();
                 return;
@@ -598,7 +603,7 @@ namespace MovieTickets.Application
 
             int projectionId = ReadInt("Projection ID: ");
 
-            Projection projection = movieService.GetAllProjections()
+            Projection projection = projectionService.GetAllProjections()
                 .FirstOrDefault(p => p.Id == projectionId);
 
             if (projection == null)
@@ -614,7 +619,7 @@ namespace MovieTickets.Application
 
             try
             {
-                movieService.PayTicket(projectionId, seatNumber);
+                ticketService.PayTicket(projectionId, seatNumber);
                 PrintSuccess("Ticket paid.");
             }
             catch (Exception ex)
@@ -634,7 +639,7 @@ namespace MovieTickets.Application
 
             int projectionId = ReadInt("Projection ID: ");
 
-            Projection projection = movieService.GetAllProjections()
+            Projection projection = projectionService.GetAllProjections()
                 .FirstOrDefault(p => p.Id == projectionId);
 
             if (projection == null)
@@ -650,7 +655,7 @@ namespace MovieTickets.Application
 
             try
             {
-                movieService.CancelReservation(projectionId, seatNumber);
+                ticketService.CancelReservation(projectionId, seatNumber);
                 PrintSuccess("Ticket cancelled.");
             }
             catch (Exception ex)
@@ -668,7 +673,7 @@ namespace MovieTickets.Application
 
             ShowProjections();
 
-            if (movieService.GetAllProjections().Count == 0)
+            if (projectionService.GetAllProjections().Count == 0)
             {
                 Pause();
                 return;
@@ -676,7 +681,7 @@ namespace MovieTickets.Application
 
             int projectionId = ReadInt("Projection ID: ");
 
-            Projection projection = movieService.GetAllProjections()
+            Projection projection = projectionService.GetAllProjections()
                 .FirstOrDefault(p => p.Id == projectionId);
 
             if (projection == null)
@@ -692,7 +697,7 @@ namespace MovieTickets.Application
 
             try
             {
-                string text = movieService.GenerateTicketText(projectionId, seatNumber);
+                string text = reportService.GenerateTicketText(projectionId, seatNumber);
 
                 Console.WriteLine();
                 Console.WriteLine(text);
@@ -733,7 +738,7 @@ namespace MovieTickets.Application
 
                 foreach (Ticket ticket in row)
                 {
-                    string status = movieService.GetTicketStatus(ticket);
+                    string status = reportService.GetTicketStatus(ticket);
 
                     if (status == "FREE")
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -758,7 +763,7 @@ namespace MovieTickets.Application
 
         private void ShowAllTicketsShort()
         {
-            IReadOnlyList<Ticket> tickets = movieService.GetAllTickets();
+            IReadOnlyList<Ticket> tickets = ticketService.GetAllTickets();
 
             if (tickets.Count == 0)
             {
@@ -772,7 +777,7 @@ namespace MovieTickets.Application
                     ? "N/A"
                     : ticket.Projection.Movie.Name;
 
-                string status = movieService.GetTicketStatus(ticket);
+                string status = reportService.GetTicketStatus(ticket);
 
                 Console.WriteLine(
                     $"Ticket ID: {ticket.Id} | Movie: {movieName} | Seat: Row {ticket.Seat.Row}, Seat {ticket.Seat.Column} | Price: {ticket.Price} lv | Status: {status}"
@@ -830,7 +835,7 @@ namespace MovieTickets.Application
 
             ShowProjections();
 
-            if (movieService.GetAllProjections().Count == 0)
+            if (projectionService.GetAllProjections().Count == 0)
             {
                 Pause();
                 return;
@@ -838,7 +843,7 @@ namespace MovieTickets.Application
 
             int projectionId = ReadInt("Projection ID: ");
 
-            Projection projection = movieService.GetAllProjections()
+            Projection projection = projectionService.GetAllProjections()
                 .FirstOrDefault(p => p.Id == projectionId);
 
             if (projection == null)
@@ -868,7 +873,7 @@ namespace MovieTickets.Application
         {
             PrintHeader("REVENUE REPORT");
 
-            decimal revenue = movieService.GetAllTickets()
+            decimal revenue = ticketService.GetAllTickets()
                 .Where(t => t.IsPaid && !t.IsCancelled)
                 .Sum(t => t.Price);
 
@@ -881,7 +886,7 @@ namespace MovieTickets.Application
         {
             PrintHeader("MOST WATCHED MOVIES");
 
-            var report = movieService.GetAllTickets()
+            var report = ticketService.GetAllTickets()
                 .Where(t => t.IsPaid && !t.IsCancelled)
                 .Where(t => t.Projection != null && t.Projection.Movie != null)
                 .GroupBy(t => t.Projection.Movie.Name)

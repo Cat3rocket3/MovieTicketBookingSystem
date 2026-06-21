@@ -172,7 +172,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\interfaces\ITheaterRepository.cs" />
+    <Compile Include="Application\Services\HallService.cs" />
     <Compile Include="Application\Services\MovieService.cs" />
+    <Compile Include="Application\Services\ProjectionService.cs" />
+    <Compile Include="Application\Services\ReportsService.cs" />
+    <Compile Include="Application\Services\TicketService.cs" />
     <Compile Include="Application\UI.cs" />
     <Compile Include="Data\AppDbContext.cs" />
     <Compile Include="Domain\Entities\Genre.cs" />
