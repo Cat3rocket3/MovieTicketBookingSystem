@@ -2,6 +2,7 @@
 using MovieTickets.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MovieTickets.Application.Services
 {
@@ -17,6 +18,11 @@ namespace MovieTickets.Application.Services
         public IReadOnlyList<Hall> GetAllHalls()
         {
             return repository.GetAllHalls();
+        }
+
+        public Hall GetHallById(int id)
+        {
+            return repository.GetHallById(id);
         }
 
         public void AddHall(int rows, int columns)
@@ -46,6 +52,33 @@ namespace MovieTickets.Application.Services
         public void RemoveHall(int id)
         {
             repository.RemoveHall(id);
+        }
+
+       
+
+        public void AddSeat(int hallId, int row, int column)
+        {
+            Hall hall = repository.GetHallById(hallId);
+
+            if (hall == null)
+                throw new Exception("Hall not found.");
+
+            bool exists = hall.Seats.Any(s => s.Row == row && s.Column == column);
+
+            if (exists)
+                throw new Exception("A seat already exists at this row/column.");
+
+            int nextNumber = hall.Seats.Count == 0 ? 1 : hall.Seats.Max(s => s.Number) + 1;
+
+            Seat seat = new Seat(row, column, nextNumber);
+            seat.HallId = hallId;
+
+            repository.AddSeat(seat);
+        }
+
+        public void RemoveSeat(int seatId)
+        {
+            repository.RemoveSeat(seatId);
         }
     }
 }

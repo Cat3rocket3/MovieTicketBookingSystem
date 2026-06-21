@@ -66,12 +66,52 @@ namespace MovieTickets.Application.Services
             repository.AddProjection(projection);
         }
 
-        private bool HasScheduleConflict(int hallId, DateTime newStart, int newMovieDuration)
+        public void EditProjection(int id, int movieId, int hallId, decimal price, DateTime date)
+        {
+            Projection projection = repository.GetProjectionById(id);
+
+            if (projection == null)
+                throw new Exception("Projection not found.");
+
+            Movie movie = repository.GetMovieById(movieId);
+            Hall hall = repository.GetHallById(hallId);
+
+            if (movie == null)
+                throw new Exception("Movie not found.");
+
+            if (hall == null)
+                throw new Exception("Hall not found.");
+
+            if (price <= 0)
+                throw new Exception("Price must be positive.");
+
+            if (HasScheduleConflict(hallId, date, movie.Duration, projection.Id))
+                throw new Exception("This hall already has a projection during this time.");
+
+            projection.MovieId = movieId;
+            projection.HallId = hallId;
+            projection.Price = price;
+            projection.Date = date;
+
+           
+            if (projection.Tickets != null)
+            {
+                foreach (Ticket ticket in projection.Tickets)
+                {
+                    if (!ticket.IsPaid)
+                        ticket.Price = price;
+                }
+            }
+
+            repository.UpdateProjection(projection);
+        }
+
+        private bool HasScheduleConflict(int hallId, DateTime newStart, int newMovieDuration, int excludeProjectionId = 0)
         {
             DateTime newEnd = newStart.AddMinutes(newMovieDuration);
 
             var projections = repository.GetAllProjections()
-                .Where(p => p.HallId == hallId)
+                .Where(p => p.HallId == hallId && p.Id != excludeProjectionId)
                 .ToList();
 
             foreach (Projection projection in projections)

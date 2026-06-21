@@ -172,11 +172,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\interfaces\ITheaterRepository.cs" />
+    <Compile Include="Application\Services\GenreService.cs" />
     <Compile Include="Application\Services\HallService.cs" />
     <Compile Include="Application\Services\MovieService.cs" />
     <Compile Include="Application\Services\ProjectionService.cs" />
     <Compile Include="Application\Services\ReportsService.cs" />
     <Compile Include="Application\Services\TicketService.cs" />
+    <Compile Include="Application\Services\UserService.cs" />
     <Compile Include="Application\UI.cs" />
     <Compile Include="Data\AppDbContext.cs" />
     <Compile Include="Domain\Entities\Genre.cs" />
@@ -214,6 +216,10 @@
     <Compile Include="Migrations\20260615100138_anotherMigration.cs" />
     <Compile Include="Migrations\20260615100138_anotherMigration.Designer.cs">
       <DependentUpon>20260615100138_anotherMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20260621200254_newmig.cs" />
+    <Compile Include="Migrations\20260621200254_newmig.Designer.cs">
+      <DependentUpon>20260621200254_newmig.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\AppDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />

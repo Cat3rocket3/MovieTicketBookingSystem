@@ -17,21 +17,27 @@ namespace MovieTickets.Infrastructure
             this.db = db;
         }
 
-        // ================= MOVIES =================
+       
 
         public IReadOnlyList<Movie> GetAllMovies()
         {
-            return db.Movies.ToList();
+            return db.Movies.Include(m => m.Genre).ToList();
         }
 
         public Movie GetMovieById(int id)
         {
-            return db.Movies.FirstOrDefault(m => m.Id == id);
+            return db.Movies.Include(m => m.Genre).FirstOrDefault(m => m.Id == id);
         }
 
         public void AddMovie(Movie movie)
         {
             db.Movies.Add(movie);
+            db.SaveChanges();
+        }
+
+        public void UpdateMovie(Movie movie)
+        {
+            db.Movies.Update(movie);
             db.SaveChanges();
         }
 
@@ -46,7 +52,7 @@ namespace MovieTickets.Infrastructure
             db.SaveChanges();
         }
 
-        // ================= HALLS =================
+     
 
         public IReadOnlyList<Hall> GetAllHalls()
         {
@@ -79,7 +85,36 @@ namespace MovieTickets.Infrastructure
             db.SaveChanges();
         }
 
-        // ================= PROJECTIONS =================
+      
+
+        public Seat GetSeatById(int id)
+        {
+            return db.Seats.Include(s => s.Hall).FirstOrDefault(s => s.Id == id);
+        }
+
+        public void AddSeat(Seat seat)
+        {
+            db.Seats.Add(seat);
+            db.SaveChanges();
+        }
+
+        public void RemoveSeat(int id)
+        {
+            Seat seat = GetSeatById(id);
+
+            if (seat == null)
+                throw new Exception("Seat not found.");
+
+            // Prevent removing a seat that has tickets referring to it
+            bool hasTickets = db.Tickets.Any(t => t.SeatId == id);
+            if (hasTickets)
+                throw new Exception("Cannot remove seat because one or more tickets reference it.");
+
+            db.Seats.Remove(seat);
+            db.SaveChanges();
+        }
+
+       
 
         public IReadOnlyList<Projection> GetAllProjections()
         {
@@ -107,6 +142,12 @@ namespace MovieTickets.Infrastructure
             db.SaveChanges();
         }
 
+        public void UpdateProjection(Projection projection)
+        {
+            db.Projections.Update(projection);
+            db.SaveChanges();
+        }
+
         public void RemoveProjection(int id)
         {
             Projection projection = GetProjectionById(id);
@@ -123,7 +164,7 @@ namespace MovieTickets.Infrastructure
             db.SaveChanges();
         }
 
-        // ================= TICKETS =================
+        
 
         public List<Ticket> GetAllTickets()
         {
@@ -145,6 +186,7 @@ namespace MovieTickets.Infrastructure
                 .Include(t => t.Projection)
                     .ThenInclude(p => p.Hall)
                 .Include(t => t.Seat)
+                .Include(t => t.User)
                 .FirstOrDefault(t => t.Id == id);
         }
 
@@ -168,6 +210,63 @@ namespace MovieTickets.Infrastructure
         public void UpdateTicket(Ticket ticket)
         {
             db.Tickets.Update(ticket);
+            db.SaveChanges();
+        }
+
+       
+        public IReadOnlyList<Genre> GetAllGenres()
+        {
+            return db.Genres.ToList();
+        }
+
+        public Genre GetGenreById(int id)
+        {
+            return db.Genres.FirstOrDefault(g => g.Id == id);
+        }
+
+        public void AddGenre(Genre genre)
+        {
+            db.Genres.Add(genre);
+            db.SaveChanges();
+        }
+
+        public void RemoveGenre(int id)
+        {
+            Genre genre = GetGenreById(id);
+
+            if (genre == null)
+                throw new Exception("Genre not found.");
+
+            db.Genres.Remove(genre);
+            db.SaveChanges();
+        }
+
+       
+
+        public IReadOnlyList<User> GetAllUsers()
+        {
+            return db.Users.ToList();
+        }
+
+        public User GetUserById(int id)
+        {
+            return db.Users.FirstOrDefault(u => u.Id == id);
+        }
+
+        public void AddUser(User user)
+        {
+            db.Users.Add(user);
+            db.SaveChanges();
+        }
+
+        public void RemoveUser(int id)
+        {
+            User user = GetUserById(id);
+
+            if (user == null)
+                throw new Exception("User not found.");
+
+            db.Users.Remove(user);
             db.SaveChanges();
         }
     }
