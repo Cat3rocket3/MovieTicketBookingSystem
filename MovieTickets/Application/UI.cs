@@ -61,7 +61,7 @@ namespace MovieTickets.Application
 
                 switch (choice)
                 {
-                    Console.WriteLine();
+                  
 
                     case "1":
                         MovieMenu();
