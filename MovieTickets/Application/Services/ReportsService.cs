@@ -33,8 +33,13 @@ namespace MovieTickets.Application.Services
                 ? "N/A"
                 : ticket.Projection.Date.ToString("yyyy-MM-dd HH:mm");
 
+            string customer = ticket.User == null
+                ? "Not reserved / paid"
+                : ticket.User.FullName;
+
             return
                 "========== MOVIE TICKET ==========\n" +
+                $"Customer: {customer}\n" +
                 $"Ticket ID: {ticket.Id}\n" +
                 $"Movie: {movieName}\n" +
                 $"Hall: {hall}\n" +

@@ -623,7 +623,7 @@ namespace MovieTickets.Application
             Pause();
         }
 
-       
+
 
         private void SeatMenu()
         {
@@ -641,6 +641,19 @@ namespace MovieTickets.Application
                     return;
                 }
 
+                int hallId = ReadInt("Select Hall ID to view/edit seats: ");
+
+                Hall hall = hallService.GetHallById(hallId);
+
+                if (hall == null)
+                {
+                    PrintError("Hall not found.");
+                    Pause();
+                    continue;
+                }
+
+                ShowHallSeats(hall);
+
                 Console.WriteLine();
                 Console.WriteLine("1. Add seat to hall");
                 Console.WriteLine("2. Remove seat");
@@ -653,11 +666,11 @@ namespace MovieTickets.Application
                 switch (choice)
                 {
                     case "1":
-                        AddSeat();
+                        AddSeat(hall.Id);
                         break;
 
                     case "2":
-                        RemoveSeat();
+                        RemoveSeat(hall.Id);
                         break;
 
                     case "0":
@@ -672,11 +685,11 @@ namespace MovieTickets.Application
             }
         }
 
-        private void AddSeat()
+
+        private void AddSeat(int hallId)
         {
             PrintHeader("ADD SEAT");
 
-            int hallId = ReadInt("Hall ID: ");
             int row = ReadInt("Row: ");
             int column = ReadInt("Column: ");
 
@@ -693,11 +706,9 @@ namespace MovieTickets.Application
             Pause();
         }
 
-        private void RemoveSeat()
+        private void RemoveSeat(int hallId)
         {
             PrintHeader("REMOVE SEAT");
-
-            int hallId = ReadInt("Hall ID: ");
 
             Hall hall = hallService.GetHallById(hallId);
 
@@ -708,10 +719,24 @@ namespace MovieTickets.Application
                 return;
             }
 
+            if (hall.Seats == null || hall.Seats.Count == 0)
+            {
+                PrintMuted("This hall has no seats.");
+                Pause();
+                return;
+            }
+
+            Console.WriteLine($"Hall ID: {hall.Id}");
+            PrintLine();
+
             foreach (Seat seat in hall.Seats)
             {
-                Console.WriteLine($"Seat ID: {seat.Id} | Row {seat.Row}, Column {seat.Column} (Number {seat.Number})");
+                Console.WriteLine(
+                    $"Seat ID: {seat.Id} | Row {seat.Row}, Column {seat.Column} | Number {seat.Number}"
+                );
             }
+
+            PrintLine();
 
             int seatId = ReadInt("Seat ID to remove: ");
 
@@ -728,7 +753,7 @@ namespace MovieTickets.Application
             Pause();
         }
 
-       
+
 
         private void ProjectionMenu()
         {
@@ -1295,9 +1320,13 @@ namespace MovieTickets.Application
 
             var rows = projection.Tickets
                 .Where(t => t.Seat != null)
-                .OrderBy(t => t.Seat.Row)
+                .OrderBy(t => t.Seat.Number)
+                .ThenBy(t => t.Seat.Row)
                 .ThenBy(t => t.Seat.Column)
                 .GroupBy(t => t.Seat.Row);
+
+
+           
 
             foreach (var row in rows)
             {
@@ -1510,6 +1539,40 @@ namespace MovieTickets.Application
 
                 PrintError("Invalid price.");
             }
+        }
+
+        private void ShowHallSeats(Hall hall)
+        {
+            if (hall == null || hall.Seats == null || hall.Seats.Count == 0)
+            {
+                PrintMuted("This hall has no seats.");
+                return;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine($"Hall ID: {hall.Id} - Seat Layout");
+            PrintLine();
+
+
+            var grouped = hall.Seats
+             .OrderBy(s => s.Number)
+             .ThenBy(s => s.Column)
+             .GroupBy(s => s.Row);
+           
+
+            foreach (var row in grouped)
+            {
+                Console.Write($"Row {row.Key}: ");
+
+                foreach (var seat in row)
+                {
+                    Console.Write($"[{seat.Number}] ");
+                }
+
+                Console.WriteLine();
+            }
+
+            PrintLine();
         }
 
         private DateTime ReadDateTime(string message)
