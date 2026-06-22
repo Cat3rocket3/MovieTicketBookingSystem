@@ -41,7 +41,7 @@ namespace MovieTickets
             var userService = new UserService(repository);
 
             var ui = new UI( movieService, hallService,  projectionService, ticketService,   reportService,  genreService,  userService);
-            SeedDatabase(db);
+            //SeedDatabase(db);
             ui.ShowMainMenu();
         }
         public static void SeedDatabase(AppDbContext context)
